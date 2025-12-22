@@ -19,6 +19,9 @@
     <Filter Include="ソース ファイル\GameScene.h">
       <UniqueIdentifier>{5bdd04ef-95b4-416f-9148-65daf70ff70e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Player">
+      <UniqueIdentifier>{0a665f97-55c0-442f-ac6b-5c4c337a1dcd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,6 +29,9 @@
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
       <Filter>ソース ファイル\GameScene.h</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +86,9 @@
   <ItemGroup>
     <ClInclude Include="GameScene.h">
       <Filter>ソース ファイル\GameScene.h</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ソース ファイル\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
