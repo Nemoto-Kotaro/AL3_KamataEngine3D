@@ -22,6 +22,9 @@
     <Filter Include="ソース ファイル\Player">
       <UniqueIdentifier>{0a665f97-55c0-442f-ac6b-5c4c337a1dcd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Matrix">
+      <UniqueIdentifier>{3ab7f366-0c12-4bba-ab95-e00bfd42d159}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -32,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>ソース ファイル\Matrix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +95,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>ソース ファイル\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>ソース ファイル\Matrix</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
