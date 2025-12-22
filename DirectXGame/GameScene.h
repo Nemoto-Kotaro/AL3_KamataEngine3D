@@ -2,7 +2,6 @@
 #include "KamataEngine.h"
 #include "Player.h"
 
-
 class GameScene {
 private:
 	uint32_t textureHandle_ = 0;
