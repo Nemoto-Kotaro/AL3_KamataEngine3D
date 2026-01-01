@@ -1,24 +1,22 @@
 #include "Player.h"
+#include "WorldTransform.h"
 #include <cassert>
 
 using namespace KamataEngine;
 
 
-void Player::Initialize(KamataEngine::Model* model, uint32_t textureHandle, KamataEngine::Camera* camera) {
+void Player::Initialize(KamataEngine::Model* model ,KamataEngine::Camera* camera) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-
-	
-	textureHandle_ = textureHandle;
+	worldTransform_.translation_.x = 0.0f;
+	worldTransform_.translation_.y = 0.5f;
 
 	camera_ = camera;
 }
 
-void Player::Update() { worldTransform_.TransferMatrix(); }
+void Player::Update() { WorldTransformUpdate(worldTransform_); }
 
 void Player::Draw() {
-	Model::PreDraw();
-	model_->Draw(worldTransform_, *camera_, textureHandle_);
-	Model::PostDraw();
+	model_->Draw(worldTransform_, *camera_);
 }

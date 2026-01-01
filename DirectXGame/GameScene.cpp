@@ -18,28 +18,28 @@ GameScene::~GameScene() {
 
 	worldTransFormBlocks_.clear();
 
+	delete skyDomeModel_;
+	delete skyDome_;
 	
 	delete debugCamera_;
 }
 
 void GameScene::Initialize() {
 
-
+	camera_.farZ = 2000.0f;
 	camera_.Initialize();
 
 	// プレイヤー
-	playerTextureHandle_ = TextureManager::Load("./Resources/uvChecker.png");
-	playerModel_ = Model::Create();
+	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
-	player_->Initialize(playerModel_, playerTextureHandle_, &camera_);
+	player_->Initialize(playerModel_,  &camera_);
 
 	// ブロック
-	blockTextureHandle_ = TextureManager::Load("./Resources/cube/cube.jpg");
-	blockModel_ = Model::Create();
+	blockModel_ = Model::CreateFromOBJ("Block_Crate", true);
 	const uint32_t kNumBlockVertical = 10;
 	const uint32_t kNumBlockHorizontal = 20;
-	const float kBlockWight = 2.0f;
-	const float kBlockHeight = 2.0f;
+	const float kBlockWight = 1.0f;
+	const float kBlockHeight = 1.0f;
 	worldTransFormBlocks_.resize(kNumBlockVertical);
 	for (uint32_t i = 0; i < kNumBlockVertical; i++) {
 		worldTransFormBlocks_[i].resize(kNumBlockHorizontal);
@@ -55,6 +55,11 @@ void GameScene::Initialize() {
 			}
 		}
 	}
+
+	//天球
+	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere",true);
+	skyDome_ = new Skydome();
+	skyDome_->Initialize(skyDomeModel_, &camera_);
 
 	
 	// デバック
@@ -72,14 +77,16 @@ void GameScene::Update() {
 				continue;
 			}
 
-			worldTransFormBlock->matWorld_ = MakeAffineMatrix(worldTransFormBlock->scale_, worldTransFormBlock->rotation_, worldTransFormBlock->translation_);
-			worldTransFormBlock->TransferMatrix();
+			WorldTransformUpdate(*worldTransFormBlock);
 		}
 	}
 
-	//デバック
-	
+	//天球
+	skyDome_->Update();
 
+
+
+	//デバック
 	#ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
@@ -97,21 +104,24 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
+	Model::PreDraw();
+	// 天球
+	skyDome_->Draw();
+
 	// プレイヤー
 	player_->Draw();
 
 	// ブロック
-
-	Model::PreDraw();
 	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
 		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
 			if (!worldTransFormBlock) {
 				continue;
 			}
 
-			blockModel_->Draw(*worldTransFormBlock, camera_, blockTextureHandle_);
+			blockModel_->Draw(*worldTransFormBlock, camera_);
 		}
 	}
+
 
 	Model::PostDraw();
 }
