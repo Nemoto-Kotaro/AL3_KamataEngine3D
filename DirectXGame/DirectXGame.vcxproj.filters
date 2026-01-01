@@ -25,6 +25,12 @@
     <Filter Include="ソース ファイル\Matrix">
       <UniqueIdentifier>{3ab7f366-0c12-4bba-ab95-e00bfd42d159}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Skydomo">
+      <UniqueIdentifier>{ba8749af-3f05-4f84-8109-92f553847711}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\WorldTransform">
+      <UniqueIdentifier>{23ff1c36-d355-45cc-8f2c-eaaa57c71911}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -38,6 +44,12 @@
     </ClCompile>
     <ClCompile Include="Matrix.cpp">
       <Filter>ソース ファイル\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Skydome.cpp">
+      <Filter>ソース ファイル\Skydomo</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldTransform.cpp">
+      <Filter>ソース ファイル\WorldTransform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +110,12 @@
     </ClInclude>
     <ClInclude Include="Matrix.h">
       <Filter>ソース ファイル\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Skydome.h">
+      <Filter>ソース ファイル\Skydomo</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldTransform.h">
+      <Filter>ソース ファイル\WorldTransform</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
