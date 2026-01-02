@@ -9,7 +9,7 @@ void Player::Initialize(KamataEngine::Model* model ,KamataEngine::Camera* camera
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	worldTransform_.translation_.x = 0.0f;
+	worldTransform_.translation_.x = 1.0f;
 	worldTransform_.translation_.y = 0.5f;
 
 	camera_ = camera;

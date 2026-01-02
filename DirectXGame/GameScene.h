@@ -4,6 +4,7 @@
 #include "WorldTransform.h"
 #include "Player.h"
 #include "Skydome.h"
+#include "MapChipField.h"
 
 class GameScene {
 private:
@@ -14,6 +15,8 @@ private:
 	Player* player_ = nullptr;
 
 	//ブロック
+	MapChipField* mapChipField_;
+
 	KamataEngine::Model* blockModel_ = nullptr;
 	std::vector < std::vector<KamataEngine::WorldTransform*>> worldTransFormBlocks_;
 
@@ -31,4 +34,6 @@ public:
 	void Initialize();
 	void Update();
 	void Draw();
+
+	void GenerateBlocks();
 };
