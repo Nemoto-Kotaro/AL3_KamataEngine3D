@@ -31,6 +31,9 @@
     <Filter Include="ソース ファイル\WorldTransform">
       <UniqueIdentifier>{23ff1c36-d355-45cc-8f2c-eaaa57c71911}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\MapChipField">
+      <UniqueIdentifier>{0059c5e8-de0c-43d6-beb3-057708ad561a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="WorldTransform.cpp">
       <Filter>ソース ファイル\WorldTransform</Filter>
+    </ClCompile>
+    <ClCompile Include="MapChipField.cpp">
+      <Filter>ソース ファイル\MapChipField</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="WorldTransform.h">
       <Filter>ソース ファイル\WorldTransform</Filter>
+    </ClInclude>
+    <ClInclude Include="MapChipField.h">
+      <Filter>ソース ファイル\MapChipField</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
