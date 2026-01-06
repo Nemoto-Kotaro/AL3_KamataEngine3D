@@ -33,11 +33,6 @@ void GameScene::Initialize() {
 	camera_.farZ = 2000.0f;
 	camera_.Initialize();
 
-	// プレイヤー
-	playerModel_ = Model::CreateFromOBJ("Player", true);
-	player_ = new Player();
-	player_->Initialize(playerModel_,  &camera_);
-
 	// ブロック
 	blockModel_ = Model::CreateFromOBJ("Block_Crate", true);
 
@@ -45,6 +40,11 @@ void GameScene::Initialize() {
 	mapChipField_->LoadMapChipCsv("Resources/mapData.csv");
 	GenerateBlocks();
 
+	// プレイヤー
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,18);
+	playerModel_ = Model::CreateFromOBJ("Player", true);
+	player_ = new Player();
+	player_->Initialize(playerModel_, &camera_, playerPosition);
 
 	//天球
 	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere",true);

@@ -1,4 +1,4 @@
-# Blender 5.0.1 MTL File: 'Chicken (1).blend'
+# Blender 5.0.1 MTL File: 'Chicken.blend'
 # www.blender.org
 
 newmtl Atlas
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd Atlas_Monsters.png
+map_Kd C:/Atlas_Monsters.png

@@ -154,11 +154,14 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="easing.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChipField.cpp" />
+    <ClCompile Include="mathTypes.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SelfVector.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
   </ItemGroup>
@@ -260,10 +263,13 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="easing.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MapChipField.h" />
+    <ClInclude Include="mathTypes.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SelfVector.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="WorldTransform.h" />
   </ItemGroup>

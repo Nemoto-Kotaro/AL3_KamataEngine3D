@@ -34,6 +34,12 @@
     <Filter Include="ソース ファイル\MapChipField">
       <UniqueIdentifier>{0059c5e8-de0c-43d6-beb3-057708ad561a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Easing">
+      <UniqueIdentifier>{52e05e4f-3d54-4ffb-8be1-6aebfec6b04f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\SelfMath">
+      <UniqueIdentifier>{3cefa942-8f2e-4b60-a0a3-a1c4d8138ccc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,6 +62,15 @@
     </ClCompile>
     <ClCompile Include="MapChipField.cpp">
       <Filter>ソース ファイル\MapChipField</Filter>
+    </ClCompile>
+    <ClCompile Include="easing.cpp">
+      <Filter>ソース ファイル\Easing</Filter>
+    </ClCompile>
+    <ClCompile Include="mathTypes.cpp">
+      <Filter>ソース ファイル\SelfMath</Filter>
+    </ClCompile>
+    <ClCompile Include="SelfVector.cpp">
+      <Filter>ソース ファイル\SelfMath</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +140,15 @@
     </ClInclude>
     <ClInclude Include="MapChipField.h">
       <Filter>ソース ファイル\MapChipField</Filter>
+    </ClInclude>
+    <ClInclude Include="easing.h">
+      <Filter>ソース ファイル\Easing</Filter>
+    </ClInclude>
+    <ClInclude Include="mathTypes.h">
+      <Filter>ソース ファイル\SelfMath</Filter>
+    </ClInclude>
+    <ClInclude Include="SelfVector.h">
+      <Filter>ソース ファイル\SelfMath</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
