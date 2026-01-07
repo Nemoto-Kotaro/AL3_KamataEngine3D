@@ -5,10 +5,14 @@
 #include "Player.h"
 #include "Skydome.h"
 #include "MapChipField.h"
+#include "CameraController.h"
 
 class GameScene {
 private:
 	KamataEngine::Camera camera_;
+
+	//カメラコントローラー
+	CameraController* camaraController_ = nullptr;
 
 	//プレイヤー
 	KamataEngine::Model* playerModel_ = nullptr;

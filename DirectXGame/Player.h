@@ -15,9 +15,9 @@ private:
 	KamataEngine::Camera* camera_ = nullptr;
 
 	//移動
-	static inline const float kAcceleration = 0.003f;
+	static inline const float kAcceleration = 0.006f;
 	static inline const float kAttenuation = 0.07f;
-	static inline const float kLimitRunSpeed = 0.3f;
+	static inline const float kLimitRunSpeed = 0.5f;
 	SelfVec3 velocity_ = {};
 
 	//回転
@@ -37,4 +37,7 @@ public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
 	void Update();
 	void Draw();
+
+	KamataEngine::WorldTransform& GetWorldTransform() { return worldTransform_; };
+	const SelfVec3& GetVelocity() const { return velocity_; };
 };

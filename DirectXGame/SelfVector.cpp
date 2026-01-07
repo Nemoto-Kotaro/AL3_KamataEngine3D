@@ -89,6 +89,10 @@ SelfVec3 SelfVec3::operator/(const float& num) const {
 
 SelfVec3 ChangeVec3(const KamataEngine::Vector3& vector3) { return {vector3.x, vector3.y, vector3.z}; };
 
+KamataEngine::Vector3 Lerp(KamataEngine::Vector3 start, KamataEngine::Vector3 end, float ratio) {
+	return {(1.0f - ratio) * start.x + ratio * end.x, (1.0f - ratio) * start.y + ratio * end.y, (1.0f - ratio) * start.z + ratio * end.z};
+}
+
 //=======================================
 // SelfVec4
 //=======================================

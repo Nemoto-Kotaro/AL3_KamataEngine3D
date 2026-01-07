@@ -25,11 +25,15 @@ GameScene::~GameScene() {
 	delete skyDomeModel_;
 	delete skyDome_;
 	
+	//カメラ
+	delete camaraController_;
+
 	delete debugCamera_;
 }
 
 void GameScene::Initialize() {
 
+	//カメラ
 	camera_.farZ = 2000.0f;
 	camera_.Initialize();
 
@@ -51,6 +55,11 @@ void GameScene::Initialize() {
 	skyDome_ = new Skydome();
 	skyDome_->Initialize(skyDomeModel_, &camera_);
 
+	// カメラコントローラ
+	camaraController_ = new CameraController();
+	camaraController_->Initialize(&camera_);
+	camaraController_->SetTarget(player_);
+	camaraController_->Reset();
 	
 	// デバック
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -75,7 +84,6 @@ void GameScene::Update() {
 	skyDome_->Update();
 
 
-
 	//デバック
 	#ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
@@ -89,7 +97,7 @@ void GameScene::Update() {
 		camera_.matProjection = debugCamera_->GetCamera().matProjection;
 		camera_.TransferMatrix();
 	} else {
-		camera_.UpdateMatrix();
+		camaraController_->Update();
 	}
 }
 

@@ -51,8 +51,9 @@ struct SelfVec3 {
 };
 
 SelfVec3 ChangeVec3(const KamataEngine::Vector3& vector3);
+KamataEngine::Vector3 Lerp(KamataEngine::Vector3 start, KamataEngine::Vector3 end, float ratio);
 
-//====================
+    //====================
 // SelfVec4
 //====================
 struct SelfVec4 {

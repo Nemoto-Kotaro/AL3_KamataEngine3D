@@ -20,7 +20,7 @@ void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
 }
 
 void Player::Update() {
-	//接地確認
+	// 接地確認
 	bool landing = false;
 	if (velocity_.y < 0.0f) {
 		if (worldTransform_.translation_.y <= 1.0f) {
@@ -42,10 +42,9 @@ void Player::Update() {
 		}
 	}
 
-
 	if (onGround_) {
 
-		//移動入力
+		// 移動入力
 		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
 			SelfVec3 acceleration = {};
 
@@ -83,15 +82,14 @@ void Player::Update() {
 			velocity_.x *= (1.0f - kAttenuation);
 		}
 
-		//ジャンプ入力
+		// ジャンプ入力
 		if (Input::GetInstance()->PushKey(DIK_UP)) {
 			velocity_ += SelfVec3(0.0f, kJumpAcceleration, 0.0f);
 		}
 
-
 	} else {
 		velocity_ += SelfVec3(0.0f, -kGravityAcceleration, 0.0f);
-		velocity_.y = std::max(velocity_.y,-kLimitFallSpeed);
+		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
 
 	SelfVec3 tmp = ChangeVec3(worldTransform_.translation_) + velocity_;
@@ -112,3 +110,4 @@ void Player::Update() {
 }
 
 void Player::Draw() { model_->Draw(worldTransform_, *camera_); }
+
