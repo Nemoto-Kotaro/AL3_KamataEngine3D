@@ -41,6 +41,12 @@ struct SelfVec3 {
 	void operator-=(const SelfVec3& rhs);
 	SelfVec3 operator-(const SelfVec3& rhs) const;
 
+	void operator+=(const KamataEngine::Vector3& rhs);
+	SelfVec3 operator+(const KamataEngine::Vector3& rhs) const;
+
+	void operator-=(const KamataEngine::Vector3& rhs);
+	SelfVec3 operator-(const KamataEngine::Vector3& rhs) const;
+
 	void operator*=(const float& num);
 	SelfVec3 operator*(const float& num) const;
 
@@ -50,7 +56,9 @@ struct SelfVec3 {
 	KamataEngine::Vector3 ToVector3() const { return {x, y, z}; }
 };
 
-SelfVec3 ChangeVec3(const KamataEngine::Vector3& vector3);
+SelfVec3 ChangeSelfVec3(const KamataEngine::Vector3& vector3);
+KamataEngine::Vector3 ChangeVector3(const SelfVec3& vector3);
+
 KamataEngine::Vector3 Lerp(KamataEngine::Vector3 start, KamataEngine::Vector3 end, float ratio);
 
     //====================
