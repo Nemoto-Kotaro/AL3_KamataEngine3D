@@ -49,6 +49,8 @@ void GameScene::Initialize() {
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
 	player_->Initialize(playerModel_, &camera_, playerPosition);
+	
+	player_->SetMapChipField(mapChipField_);
 
 	//天球
 	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere",true);

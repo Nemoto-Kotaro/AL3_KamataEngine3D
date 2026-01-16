@@ -3,6 +3,8 @@
 #include <map>
 #include <sstream>
 
+using namespace KamataEngine;
+
 // 名づけ
 namespace {
 std::map<std::string, MapChipType> mapChipTable = {
@@ -63,6 +65,24 @@ MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex
 	return mapChipData_.data[yIndex][xIndex];
 }
 
-KamataEngine::Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) {
-	return KamataEngine::Vector3(kBlockWidth * static_cast<float>(xIndex), kBlockHeight * static_cast<float>(kNumBlockVertical - 1 - yIndex), 0.0f);
+Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) {
+	return Vector3(kBlockWidth * static_cast<float>(xIndex), kBlockHeight * static_cast<float>(kNumBlockVertical - 1 - yIndex), 0.0f);
+}
+
+MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
+	IndexSet indexSet = {};
+	indexSet.xIndex = static_cast<uint32_t>(position.x + (kBlockWidth / 2.0f) / kBlockWidth);
+	indexSet.yIndex = kNumBlockVertical - 1 - static_cast<uint32_t>(position.y + (kBlockHeight / 2.0f) / kBlockHeight);
+	return indexSet;
+}
+
+MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) { 
+	Vector3 center = GetMapChipPositionByIndex(xIndex,yIndex); 
+	Rect rect;
+	rect.left = center.x - kBlockWidth / 2.0f;
+	rect.right = center.x + kBlockWidth / 2.0f;
+	rect.top = center.y + kBlockHeight / 2.0f;
+	rect.bottom = center.y - kBlockHeight / 2.0f;
+
+	return rect;
 }

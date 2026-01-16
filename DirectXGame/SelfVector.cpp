@@ -1,5 +1,8 @@
 ﻿#include "SelfVector.h"
 
+
+using namespace KamataEngine;
+
 //=======================================
 // SelfVec2
 //=======================================
@@ -62,6 +65,22 @@ void SelfVec3::operator-=(const SelfVec3& rhs) {
 
 SelfVec3 SelfVec3::operator-(const SelfVec3& rhs) const { return {x - rhs.x, y - rhs.y, z - rhs.z}; }
 
+void SelfVec3::operator+=(const Vector3& rhs) {
+	x += rhs.x;
+	y += rhs.y;
+	z += rhs.z;
+}
+
+SelfVec3 SelfVec3::operator+(const Vector3& rhs) const { return {x + rhs.x, y + rhs.y, z + rhs.z}; }
+
+void SelfVec3::operator-=(const Vector3& rhs) {
+	x -= rhs.x;
+	y -= rhs.y;
+	z -= rhs.z;
+}
+
+SelfVec3 SelfVec3::operator-(const Vector3& rhs) const { return {x - rhs.x, y - rhs.y, z - rhs.z}; }
+
 void SelfVec3::operator*=(const float& num) {
 	x *= num;
 	y *= num;
@@ -87,7 +106,8 @@ SelfVec3 SelfVec3::operator/(const float& num) const {
 	return {x / num, y / num, z / num};
 }
 
-SelfVec3 ChangeVec3(const KamataEngine::Vector3& vector3) { return {vector3.x, vector3.y, vector3.z}; };
+SelfVec3 ChangeSelfVec3(const Vector3& vector3) { return {vector3.x, vector3.y, vector3.z}; };
+Vector3 ChangeVector3(const SelfVec3& vector3) { return {vector3.x, vector3.y, vector3.z}; };
 
 KamataEngine::Vector3 Lerp(KamataEngine::Vector3 start, KamataEngine::Vector3 end, float ratio) {
 	return {(1.0f - ratio) * start.x + ratio * end.x, (1.0f - ratio) * start.y + ratio * end.y, (1.0f - ratio) * start.z + ratio * end.z};

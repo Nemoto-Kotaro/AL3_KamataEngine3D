@@ -10,8 +10,7 @@ void CameraController::Initialize(Camera* camera) { camera_ = camera; }
 void CameraController::Update() {
 	const WorldTransform& targetWorldTransform = target_->GetWorldTransform();
 	SelfVec3 targetVelocity = target_->GetVelocity() * kVelocityBias;
-	SelfVec3 tmp = ChangeVec3(targetWorldTransform.translation_) + targetOffset_ + targetVelocity;
-	targetTransform = tmp.ToVector3();
+	targetTransform = ChangeVector3(ChangeSelfVec3(targetWorldTransform.translation_) + targetOffset_ + targetVelocity);
 	camera_->translation_ = Lerp(camera_->translation_, targetTransform, kInterpolationRate);
 
 	camera_->translation_.x = std::clamp(camera_->translation_.x, targetWorldTransform.translation_.x + margin.left, targetWorldTransform.translation_.x + margin.right);
@@ -25,6 +24,5 @@ void CameraController::Update() {
 
 void CameraController::Reset() {
 	const WorldTransform& targetWorldTransform = target_->GetWorldTransform();
-	SelfVec3 tmp = ChangeVec3(targetWorldTransform.translation_) + targetOffset_;
-	camera_->translation_ = tmp.ToVector3();
+	camera_->translation_ =ChangeVector3(ChangeSelfVec3(targetWorldTransform.translation_) + targetOffset_);
 }
