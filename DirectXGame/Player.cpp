@@ -34,6 +34,10 @@ void Player::Update() {
 	// 結果を反映して移動
 	worldTransform_.translation_ = ChangeVector3(ChangeSelfVec3(collisionMapInfo.MoveOffset) +worldTransform_.translation_);
 
+	//天井に接している場合の処理
+	IsHitCeiling(collisionMapInfo);
+
+
 	// 接地確認
 	bool landing = false;
 	if (velocity_.y < 0.0f) {
