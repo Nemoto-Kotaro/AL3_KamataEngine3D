@@ -8,6 +8,8 @@ struct SelfVec2 {
 	float x;
 	float y;
 
+	SelfVec2(float vx = 0.0f, float vy = 0.0f) : x(vx), y(vy) {};
+
 	// 加算
 	void operator+=(const SelfVec2& rhs);
 	SelfVec2 operator+(const SelfVec2& rhs) const;
@@ -35,6 +37,8 @@ struct SelfVec3 {
 	float y;
 	float z;
 
+	SelfVec3(float vx = 0.0f, float vy = 0.0f, float vz = 0.0f) : x(vx), y(vy), z(vz) {};
+
 	void operator+=(const SelfVec3& rhs);
 	SelfVec3 operator+(const SelfVec3& rhs) const;
 
@@ -61,7 +65,7 @@ KamataEngine::Vector3 ChangeVector3(const SelfVec3& vector3);
 
 KamataEngine::Vector3 Lerp(KamataEngine::Vector3 start, KamataEngine::Vector3 end, float ratio);
 
-    //====================
+//====================
 // SelfVec4
 //====================
 struct SelfVec4 {
@@ -69,6 +73,8 @@ struct SelfVec4 {
 	float y;
 	float z;
 	float w;
+
+	SelfVec4(float vx = 0.0f, float vy = 0.0f, float vz = 0.0f, float vw = 0.0f) : x(vx), y(vy), z(vz), w(vw){};
 
 	void operator+=(const SelfVec4& rhs);
 	SelfVec4 operator+(const SelfVec4& rhs) const;

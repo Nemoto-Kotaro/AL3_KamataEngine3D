@@ -1,7 +1,12 @@
 ﻿#pragma once
 #include "KamataEngine.h"
 #include "SelfVector.h"
+
+//前方宣言
 class MapChipField;
+namespace MapChip {
+struct IndexSet;
+}
 
 enum class LRDirection { kLeft, kRight };
 
@@ -21,6 +26,15 @@ enum Corner {
 	kNumCorner
 };
 
+enum class RectSide {
+	kTop,
+	kBottom,
+	kRight,
+	kLeft,
+
+	kDirCount
+};
+
 class Player {
 private:
 	KamataEngine::Model* model_ = nullptr;
@@ -37,7 +51,7 @@ private:
 	// 移動
 	static inline const float kAcceleration = 0.006f;
 	static inline const float kAttenuation = 0.07f;
-	static inline const float kLimitRunSpeed = 0.5f;
+	static inline const float kLimitRunSpeed = 0.3f;
 	SelfVec3 velocity_ = {};
 
 	// 回転
@@ -53,6 +67,10 @@ private:
 	static inline const float kLimitFallSpeed = 0.4f;
 	static inline const float kJumpAcceleration = 0.40f;
 
+	//地形ヒットの減衰
+	static inline const float kAttenuationLanding = 0.03f;
+	static inline const float kAttenuationWall = 0.03f;
+
 	SelfVec3 CornerPosition(const KamataEngine::Vector3& center, Corner corner);
 
 	void MoveInPut();
@@ -62,7 +80,11 @@ private:
 	void MapCollisionRight(CollisionMapInfo& info);
 	void MapCollisionLeft(CollisionMapInfo& info);
 
+	bool IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::IndexSet& indexSet);
+
 	void IsHitCeiling(const CollisionMapInfo& info);
+	void IsHitGround(const CollisionMapInfo& info);
+	void IsHitWall(const CollisionMapInfo& info);
 
 public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);

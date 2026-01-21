@@ -69,8 +69,8 @@ Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex
 	return Vector3(kBlockWidth * static_cast<float>(xIndex), kBlockHeight * static_cast<float>(kNumBlockVertical - 1 - yIndex), 0.0f);
 }
 
-MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
-	IndexSet indexSet = {};
+MapChip::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
+	MapChip::IndexSet indexSet = {};
 	indexSet.xIndex = static_cast<uint32_t>((position.x + (kBlockWidth / 2.0f)) / kBlockWidth);
 	indexSet.yIndex = kNumBlockVertical - 1 - static_cast<uint32_t>((position.y + (kBlockHeight / 2.0f)) / kBlockHeight);
 	return indexSet;
