@@ -4,16 +4,21 @@
 
 enum class MapChipType { kBlank, kBlock };
 
-
-
 struct MapChipData {
 	std::vector<std::vector<MapChipType>> data;
 };
 
+namespace MapChip {
+
+struct IndexSet {
+	uint32_t xIndex;
+	uint32_t yIndex;
+};
+
+} // namespace MapChip
+
 class MapChipField {
 private:
-	
-
 	// 1ブロックのサイズ
 	static inline const float kBlockWidth = 1.0f;
 	static inline const float kBlockHeight = 1.0f;
@@ -24,11 +29,6 @@ private:
 	MapChipData mapChipData_;
 
 public:
-	struct IndexSet {
-		uint32_t xIndex;
-		uint32_t yIndex;
-	};
-
 	struct Rect {
 		float left;
 		float right;
@@ -43,6 +43,6 @@ public:
 	void LoadMapChipCsv(const std::string& filePath);
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 	KamataEngine::Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
-	IndexSet GetMapChipIndexSetByPosition(const KamataEngine::Vector3& position);
-	Rect GetRectByIndex(uint32_t xIndex,uint32_t yIndex);
+	MapChip::IndexSet GetMapChipIndexSetByPosition(const KamataEngine::Vector3& position);
+	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
 };
