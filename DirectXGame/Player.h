@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "KamataEngine.h"
 #include "SelfVector.h"
+#include "Character.h"
 
 //前方宣言
 class MapChipField;
@@ -8,7 +9,6 @@ namespace MapChip {
 struct IndexSet;
 }
 
-enum class LRDirection { kLeft, kRight };
 
 struct CollisionMapInfo {
 	bool isCeilingHit = false;

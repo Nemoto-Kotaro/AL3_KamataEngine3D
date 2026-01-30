@@ -3,6 +3,7 @@
 #include "KamataEngine.h"
 #include "WorldTransform.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "Skydome.h"
 #include "MapChipField.h"
 #include "CameraController.h"
