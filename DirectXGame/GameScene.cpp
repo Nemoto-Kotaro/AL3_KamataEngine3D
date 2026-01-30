@@ -10,6 +10,9 @@ GameScene::~GameScene() {
 	delete playerModel_;
 	delete player_;
 
+	delete enemyModel_;
+	delete enemy_;
+
 	//ブロック
 	delete mapChipField_;
 	delete blockModel_;
@@ -45,12 +48,18 @@ void GameScene::Initialize() {
 	GenerateBlocks();
 
 	// プレイヤー
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3,18);
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
 	player_->Initialize(playerModel_, &camera_, playerPosition);
 	
 	player_->SetMapChipField(mapChipField_);
+
+	//エネミー
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10, 18);
+	enemyModel_ = Model::CreateFromOBJ("Enemy", true);
+	enemy_ = new Enemy();
+	enemy_->Initialize(enemyModel_, &camera_, enemyPosition);
 
 	//天球
 	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere",true);
@@ -70,6 +79,11 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	// プレイヤー
 	player_->Update();
+
+	//エネミー
+	if (enemy_ != nullptr) {
+		enemy_->Update();
+	}
 
 	// ブロック
 	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
@@ -110,6 +124,11 @@ void GameScene::Draw() {
 
 	// プレイヤー
 	player_->Draw();
+
+	//エネミー
+	if (enemy_ != nullptr) {
+		enemy_->Draw();
+	}
 
 	// ブロック
 	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
