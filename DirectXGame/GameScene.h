@@ -19,6 +19,10 @@ private:
 	KamataEngine::Model* playerModel_ = nullptr;
 	Player* player_ = nullptr;
 
+	//エネミー
+	KamataEngine::Model* enemyModel_ = nullptr;
+	Enemy* enemy_ = nullptr;
+
 	//ブロック
 	MapChipField* mapChipField_;
 
