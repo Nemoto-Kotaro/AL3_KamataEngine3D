@@ -6,16 +6,18 @@ using namespace KamataEngine;
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	// プレイヤー
+	//=====プレイヤー=====
 	delete playerModel_;
 	delete player_;
 
+
+	//=====エネミー=====
 	delete enemyModel_;
 	for (Enemy* enemies : enemies_) {
 		delete enemies;
 	}
 
-	// ブロック
+	//=====ブロック=====
 	delete mapChipField_;
 	delete blockModel_;
 	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
@@ -26,30 +28,33 @@ GameScene::~GameScene() {
 
 	worldTransFormBlocks_.clear();
 
-	// 天球
+	//======パーティクル======
+	delete deathParticles_;
+
+
+	//=====天球=====
 	delete skyDomeModel_;
 	delete skyDome_;
 
-	// カメラ
+	//=====カメラ=====
 	delete camaraController_;
-
 	delete debugCamera_;
 }
 
 void GameScene::Initialize() {
 
-	// カメラ
+	//======カメラ======
 	camera_.farZ = 2000.0f;
 	camera_.Initialize();
 
-	// ブロック
+	//======ブロック======
 	blockModel_ = Model::CreateFromOBJ("Block_Crate", true);
 
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/mapData.csv");
 	GenerateBlocks();
 
-	// プレイヤー
+	//======プレイヤー======
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
@@ -57,7 +62,7 @@ void GameScene::Initialize() {
 
 	player_->SetMapChipField(mapChipField_);
 
-	// エネミー
+	//======エネミー======
 	enemyModel_ = Model::CreateFromOBJ("Enemy", true);
 	for (int i = 0; i < 3; i++) {
 		Enemy* newEnemy = new Enemy();
@@ -67,18 +72,24 @@ void GameScene::Initialize() {
 		enemies_.push_back(newEnemy);
 	}
 
-	// 天球
+	
+	//=====パーティクル=====
+	particleModel_ = Model::CreateFromOBJ("Particle",true);
+	deathParticles_ = new DeathParticles;
+	deathParticles_->Initialize(particleModel_, &camera_, playerPosition);
+
+	//======天球======
 	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere", true);
 	skyDome_ = new Skydome();
 	skyDome_->Initialize(skyDomeModel_, &camera_);
 
-	// カメラコントローラ
+	//======カメラコントローラ======
 	camaraController_ = new CameraController();
 	camaraController_->Initialize(&camera_);
 	camaraController_->SetTarget(player_);
 	camaraController_->Reset();
 
-	// デバック
+	//======デバック======
 	debugCamera_ = new DebugCamera(1280, 720);
 }
 
@@ -104,6 +115,14 @@ void GameScene::Update() {
 			WorldTransformUpdate(*worldTransFormBlock);
 		}
 	}
+
+
+	
+	//======パーティクル======
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Update();
+	}
+
 
 	// 天球
 	skyDome_->Update();
@@ -142,11 +161,16 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// エネミー
-
 	for (Enemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Draw();
 		}
+	}
+
+
+	//パーティクル
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Draw();
 	}
 
 	// ブロック

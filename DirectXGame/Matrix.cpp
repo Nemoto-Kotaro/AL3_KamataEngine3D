@@ -26,6 +26,16 @@ Matrix4x4 RotatedMatrix(Vector3 theta) {
 	return Multiply(result, matrixRotatedZ);
 }
 
+
+KamataEngine::Matrix4x4 MakeRotatedZMatrix(float theta) {
+	return {
+	    {{cosf(theta), sinf(theta), 0.0f, 0.0f},
+		{-sinf(theta), cosf(theta), 0.0f, 0.0f},
+		{0.0f, 0.0f, 1.0f, 0.0f},
+		{0.0f, 0.0f, 0.0f, 1.0f}}
+    };
+}
+
 Matrix4x4 TranslateMatrix(Vector3 translate) {
 	return {
 	    {{1.0f, 0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 1.0f, 0.0f}, {translate.x, translate.y, translate.z, 1.0f}}

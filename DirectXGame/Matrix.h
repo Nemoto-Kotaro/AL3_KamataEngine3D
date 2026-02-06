@@ -3,6 +3,7 @@
 
 KamataEngine::Matrix4x4 ScaleMatrix(KamataEngine::Vector3 scale);
 KamataEngine::Matrix4x4 RotatedMatrix(KamataEngine::Vector3 theta);
+KamataEngine::Matrix4x4 MakeRotatedZMatrix(float theta);
 KamataEngine::Matrix4x4 TranslateMatrix(KamataEngine::Vector3 translate);
 
 KamataEngine::Matrix4x4 Multiply(const KamataEngine::Matrix4x4& matrixA, const KamataEngine::Matrix4x4& matrixB);
