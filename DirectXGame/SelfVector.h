@@ -62,6 +62,7 @@ struct SelfVec3 {
 
 SelfVec3 ChangeSelfVec3(const KamataEngine::Vector3& vector3);
 KamataEngine::Vector3 ChangeVector3(const SelfVec3& vector3);
+SelfVec3 TransformCoord(const SelfVec3& v, const KamataEngine::Matrix4x4& m);
 
 KamataEngine::Vector3 Lerp(KamataEngine::Vector3 start, KamataEngine::Vector3 end, float ratio);
 
@@ -90,3 +91,6 @@ struct SelfVec4 {
 
 	KamataEngine::Vector4 ToVector4() const { return {x, y, z, w}; }
 };
+
+
+	KamataEngine::Vector4 ChangeVector4(const SelfVec4& vector4);

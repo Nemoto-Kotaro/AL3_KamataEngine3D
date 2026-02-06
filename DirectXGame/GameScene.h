@@ -7,6 +7,7 @@
 #include "Skydome.h"
 #include "MapChipField.h"
 #include "CameraController.h"
+#include "DeathParticles.h"
 
 class GameScene {
 private:
@@ -23,11 +24,19 @@ private:
 	KamataEngine::Model* enemyModel_ = nullptr;
 	std::list<Enemy*> enemies_;
 
+
 	//ブロック
 	MapChipField* mapChipField_;
 
 	KamataEngine::Model* blockModel_ = nullptr;
 	std::vector < std::vector<KamataEngine::WorldTransform*>> worldTransFormBlocks_;
+
+	//パーティクル
+	KamataEngine::Model* particleModel_ = nullptr;
+	DeathParticles* deathParticles_ = nullptr;
+
+
+
 
 	//天球
 	KamataEngine::Model* skyDomeModel_ = nullptr;
