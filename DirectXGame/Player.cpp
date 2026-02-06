@@ -123,7 +123,7 @@ void Player::MapCollision(CollisionMapInfo& info) {
 bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::IndexSet& indexSet) {
 	int dirNum = static_cast<int>(dir);
 
-	//方向ごとの処理テーブル
+	// 方向ごとの処理テーブル
 	static constexpr Corner corner[static_cast<int>(RectSide::kDirCount)][2] = {
 	    {kLeftTop,    kRightTop   },
 	    {kLeftBottom, kRightBottom},
@@ -134,8 +134,8 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 	static constexpr int Next[static_cast<int>(RectSide::kDirCount)][2] = {
 	    {0,  1 },
 	    {0,  -1},
-	    {-1,  0 },
-	    {1, 0 },
+	    {-1, 0 },
+	    {1,  0 },
 	};
 
 	std::array<SelfVec3, kNumCorner> positionNew;
@@ -157,14 +157,14 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 	}
 
 	if (hit) {
-		//hit時はここの値がrectに参照される
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(positionNew[corner[dirNum][0]]));		
+		// hit時はここの値がrectに参照される
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(positionNew[corner[dirNum][0]]));
 		MapChip::IndexSet indexSetShow = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(CornerPosition(worldTransform_.translation_, corner[dirNum][0])));
 		uint32_t cmpIndexSet[2] = {indexSet.xIndex, indexSet.yIndex};
 		uint32_t cmpIndexSetShow[2] = {indexSetShow.xIndex, indexSetShow.yIndex};
 
-		//横移動ならx比較、縦移動ならy比較、nextを再利用してるので分かりずらい
-		//abs(Next[dirNum][1]) : 0=x軸, 1=y軸
+		// 横移動ならx比較、縦移動ならy比較、nextを再利用してるので分かりずらい
+		// abs(Next[dirNum][1]) : 0=x軸, 1=y軸
 		if (cmpIndexSet[abs(Next[dirNum][1])] != cmpIndexSetShow[abs(Next[dirNum][1])]) {
 			return true;
 		}
@@ -180,7 +180,7 @@ void Player::MapCollisionTop(CollisionMapInfo& info) {
 	}
 
 	MapChip::IndexSet indexSet;
-	//ここのヒット関数でindexの更新も行っている
+	// ここのヒット関数でindexの更新も行っている
 	if (IsMapBlockEdgeHit(info, RectSide::kTop, indexSet)) {
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		float moveY = (rect.bottom - worldTransform_.translation_.y) - (kHeight / 2.0f + kBlank);
@@ -209,7 +209,7 @@ void Player::MapCollisionRight(CollisionMapInfo& info) {
 	if (info.MoveOffset.x <= 0.0f) {
 		return;
 	}
-	
+
 	MapChip::IndexSet indexSet;
 	if (IsMapBlockEdgeHit(info, RectSide::kRight, indexSet)) {
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
@@ -293,6 +293,11 @@ void Player::IsHitWall(const CollisionMapInfo& info) {
 	}
 }
 
+void Player::OnCollision(const Enemy* enemy) { 
+	(void)enemy;
+	velocity_ += SelfVec3(0.0f, kJumpAcceleration, 0.0f);
+}
+
 SelfVec3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	SelfVec3 offsetTable[kNumCorner] = {
 	    {+kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
@@ -303,3 +308,14 @@ SelfVec3 Player::CornerPosition(const Vector3& center, Corner corner) {
 
 	return ChangeSelfVec3(center) + offsetTable[static_cast<uint32_t>(corner)];
 }
+
+SelfVec3 Player::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return ChangeSelfVec3(worldPos);
+}
+
+AABB Player::GetAABB() { return AABB(GetWorldPosition(), SelfVec2(kWidth, kHeight)); }

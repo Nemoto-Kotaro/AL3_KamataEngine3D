@@ -21,7 +21,7 @@ private:
 
 	//エネミー
 	KamataEngine::Model* enemyModel_ = nullptr;
-	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
 
 	//ブロック
 	MapChipField* mapChipField_;
@@ -44,5 +44,6 @@ public:
 	void Update();
 	void Draw();
 
+	void CheckAllCollisions();
 	void GenerateBlocks();
 };

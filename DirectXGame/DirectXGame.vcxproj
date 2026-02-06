@@ -154,6 +154,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -265,6 +266,7 @@
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="easing.h" />

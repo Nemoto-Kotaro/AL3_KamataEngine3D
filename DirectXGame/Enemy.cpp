@@ -37,3 +37,16 @@ void Enemy::Update() {
 }
 
 void Enemy::Draw() { model_->Draw(worldTransform_, *camera_); }
+
+SelfVec3 Enemy::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.translation_.x;
+	worldPos.y = worldTransform_.translation_.y;
+	worldPos.z = worldTransform_.translation_.z;
+
+	return ChangeSelfVec3(worldPos);
+}
+
+AABB Enemy::GetAABB() { return AABB(GetWorldPosition(), SelfVec2(kWidth, kHeight)); }
+
+void Enemy::OnCollision(const Player* player) { (void)player; }

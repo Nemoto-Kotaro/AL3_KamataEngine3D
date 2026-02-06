@@ -6,14 +6,16 @@ using namespace KamataEngine;
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
-	//プレイヤー	
+	// プレイヤー
 	delete playerModel_;
 	delete player_;
 
 	delete enemyModel_;
-	delete enemy_;
+	for (Enemy* enemies : enemies_) {
+		delete enemies;
+	}
 
-	//ブロック
+	// ブロック
 	delete mapChipField_;
 	delete blockModel_;
 	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
@@ -24,11 +26,11 @@ GameScene::~GameScene() {
 
 	worldTransFormBlocks_.clear();
 
-	//天球
+	// 天球
 	delete skyDomeModel_;
 	delete skyDome_;
-	
-	//カメラ
+
+	// カメラ
 	delete camaraController_;
 
 	delete debugCamera_;
@@ -36,7 +38,7 @@ GameScene::~GameScene() {
 
 void GameScene::Initialize() {
 
-	//カメラ
+	// カメラ
 	camera_.farZ = 2000.0f;
 	camera_.Initialize();
 
@@ -48,21 +50,25 @@ void GameScene::Initialize() {
 	GenerateBlocks();
 
 	// プレイヤー
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3,18);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
 	player_->Initialize(playerModel_, &camera_, playerPosition);
-	
+
 	player_->SetMapChipField(mapChipField_);
 
-	//エネミー
-	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10, 18);
+	// エネミー
 	enemyModel_ = Model::CreateFromOBJ("Enemy", true);
-	enemy_ = new Enemy();
-	enemy_->Initialize(enemyModel_, &camera_, enemyPosition);
+	for (int i = 0; i < 3; i++) {
+		Enemy* newEnemy = new Enemy();
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
+		newEnemy->Initialize(enemyModel_, &camera_, enemyPosition);
 
-	//天球
-	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere",true);
+		enemies_.push_back(newEnemy);
+	}
+
+	// 天球
+	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere", true);
 	skyDome_ = new Skydome();
 	skyDome_->Initialize(skyDomeModel_, &camera_);
 
@@ -71,7 +77,7 @@ void GameScene::Initialize() {
 	camaraController_->Initialize(&camera_);
 	camaraController_->SetTarget(player_);
 	camaraController_->Reset();
-	
+
 	// デバック
 	debugCamera_ = new DebugCamera(1280, 720);
 }
@@ -80,9 +86,12 @@ void GameScene::Update() {
 	// プレイヤー
 	player_->Update();
 
-	//エネミー
-	if (enemy_ != nullptr) {
-		enemy_->Update();
+	// エネミー
+
+	for (Enemy* enemies : enemies_) {
+		if (enemies != nullptr) {
+			enemies->Update();
+		}
 	}
 
 	// ブロック
@@ -96,12 +105,11 @@ void GameScene::Update() {
 		}
 	}
 
-	//天球
+	// 天球
 	skyDome_->Update();
 
-
-	//デバック
-	#ifdef _DEBUG
+// デバック
+#ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
 	}
@@ -115,6 +123,14 @@ void GameScene::Update() {
 	} else {
 		camaraController_->Update();
 	}
+
+
+
+	//当たり判定をおこなう
+	CheckAllCollisions();
+
+
+
 }
 
 void GameScene::Draw() {
@@ -125,9 +141,12 @@ void GameScene::Draw() {
 	// プレイヤー
 	player_->Draw();
 
-	//エネミー
-	if (enemy_ != nullptr) {
-		enemy_->Draw();
+	// エネミー
+
+	for (Enemy* enemies : enemies_) {
+		if (enemies != nullptr) {
+			enemies->Draw();
+		}
 	}
 
 	// ブロック
@@ -141,12 +160,8 @@ void GameScene::Draw() {
 		}
 	}
 
-
 	Model::PostDraw();
 }
-
-
-
 
 void GameScene::GenerateBlocks() {
 
@@ -160,12 +175,28 @@ void GameScene::GenerateBlocks() {
 
 	for (uint32_t i = 0; i < kNumBlockVertical; i++) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; j++) {
-			if (mapChipField_->GetMapChipTypeByIndex(j,i) == MapChipType::kBlock) {
-				WorldTransform * worldTransform = new WorldTransform();
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
 				worldTransFormBlocks_[i][j] = worldTransform;
-				worldTransFormBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j,i);
+				worldTransFormBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
 			}
 		}
 	}
+}
+
+
+void GameScene::CheckAllCollisions() {
+#pragma region playerToEnemy
+	AABB aabb1 = player_->GetAABB();
+	AABB aabb2;
+	for (Enemy* enemy : enemies_) {
+		aabb2 = enemy->GetAABB();
+		if (AABBCollision(aabb1, aabb2)) {
+			player_->OnCollision(enemy);
+			enemy->OnCollision(player_);
+		}
+	}
+
+#pragma endregion
 }
