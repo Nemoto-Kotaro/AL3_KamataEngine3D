@@ -2,6 +2,9 @@
 #include "Character.h"
 #include "SelfVector.h"
 #include "KamataEngine.h"
+#include "AABB.h"
+class Player;
+
 
 using namespace KamataEngine;
 
@@ -11,6 +14,12 @@ private:
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;
 
+	//当たり判定
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
+
+
+	//移動
 	static inline const float kWalkSpeed = 0.02f;
 	SelfVec3 velocity_;
 
@@ -24,4 +33,9 @@ public:
 	void Initialize(Model* model, Camera* camera, const Vector3& position);
 	void Update();
 	void Draw();
+
+	void OnCollision(const Player* player);
+
+	SelfVec3 GetWorldPosition();
+	AABB GetAABB();
 };

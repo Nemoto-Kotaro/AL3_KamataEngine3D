@@ -2,6 +2,8 @@
 #include "KamataEngine.h"
 #include "SelfVector.h"
 #include "Character.h"
+#include "AABB.h"
+class Enemy;
 
 //前方宣言
 class MapChipField;
@@ -91,7 +93,12 @@ public:
 	void Update();
 	void Draw();
 
+	SelfVec3 GetWorldPosition();
+	AABB GetAABB();
+	
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 	KamataEngine::WorldTransform& GetWorldTransform() { return worldTransform_; };
 	const SelfVec3& GetVelocity() const { return velocity_; };
+
+	void OnCollision(const Enemy* enemy);
 };
