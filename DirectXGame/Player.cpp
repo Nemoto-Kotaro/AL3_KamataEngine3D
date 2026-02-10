@@ -9,12 +9,13 @@
 #include <numbers>
 
 using namespace KamataEngine;
+using namespace NemotoLibrary;
 
-void Player::Initialize(Model* model, Camera* camera, const Vector3& position) {
+void Player::Initialize(Model* model, Camera* camera, const SelfVec3&position) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = position;
+	worldTransform_.translation_ = ToKamataEngine(position);
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> * -0.5f;
 
 	camera_ = camera;
@@ -25,13 +26,13 @@ void Player::Update() {
 	// 移動入力
 	MoveInPut();
 	CollisionMapInfo collisionMapInfo = {};
-	collisionMapInfo.MoveOffset = ChangeVector3(velocity_);
+	collisionMapInfo.MoveOffset = velocity_;
 
 	// 衝突チェック
 	MapCollision(collisionMapInfo);
 
 	// 結果を反映して移動
-	worldTransform_.translation_ = ChangeVector3(ChangeSelfVec3(collisionMapInfo.MoveOffset) + worldTransform_.translation_);
+	worldTransform_.translation_ =  ToKamataEngine(collisionMapInfo.MoveOffset + worldTransform_.translation_);
 
 	// 天井に接している場合の処理
 	IsHitCeiling(collisionMapInfo);
@@ -140,7 +141,7 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 
 	std::array<SelfVec3, kNumCorner> positionNew;
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
-		positionNew[i] = CornerPosition(ChangeVector3(ChangeSelfVec3(info.MoveOffset) + worldTransform_.translation_), static_cast<Corner>(i));
+		positionNew[i] = CornerPosition(info.MoveOffset + worldTransform_.translation_, static_cast<Corner>(i));
 	}
 
 	MapChipType mapChipType;
@@ -148,7 +149,7 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 	bool hit = false;
 
 	for (int i = 0; i < 2; i++) {
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(positionNew[corner[dirNum][i]]));
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[corner[dirNum][i]]);
 		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 		mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex + Next[dirNum][0], indexSet.yIndex + Next[dirNum][1]);
 		if (mapChipType == MapChipType::kBlock && mapChipTypeNext != MapChipType::kBlock) {
@@ -158,8 +159,8 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 
 	if (hit) {
 		// hit時はここの値がrectに参照される
-		indexSet = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(positionNew[corner[dirNum][0]]));
-		MapChip::IndexSet indexSetShow = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(CornerPosition(worldTransform_.translation_, corner[dirNum][0])));
+		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[corner[dirNum][0]]);
+		MapChip::IndexSet indexSetShow = mapChipField_->GetMapChipIndexSetByPosition(CornerPosition(ToMyEngine(worldTransform_.translation_), corner[dirNum][0]));
 		uint32_t cmpIndexSet[2] = {indexSet.xIndex, indexSet.yIndex};
 		uint32_t cmpIndexSetShow[2] = {indexSetShow.xIndex, indexSetShow.yIndex};
 
@@ -252,7 +253,7 @@ void Player::IsHitGround(const CollisionMapInfo& info) {
 			// 地面の接触処理
 			std::array<SelfVec3, kNumCorner> positionNew;
 			for (uint32_t i = 0; i < positionNew.size(); i++) {
-				positionNew[i] = CornerPosition(ChangeVector3(ChangeSelfVec3(info.MoveOffset) + worldTransform_.translation_), static_cast<Corner>(i));
+				positionNew[i] = CornerPosition(info.MoveOffset + worldTransform_.translation_, static_cast<Corner>(i));
 			}
 
 			MapChipType mapChipType;
@@ -260,14 +261,14 @@ void Player::IsHitGround(const CollisionMapInfo& info) {
 			bool hit = false;
 			// 左下
 			MapChip::IndexSet indexSet;
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(positionNew[kLeftBottom] + SelfVec3(0.0f, -kBlank, 0.0f)));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kLeftBottom] + SelfVec3(0.0f, -kBlank, 0.0f));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
 				hit = true;
 			}
 
 			// 右下
-			indexSet = mapChipField_->GetMapChipIndexSetByPosition(ChangeVector3(positionNew[kRightBottom] + SelfVec3(0.0f, -kBlank, 0.0f)));
+			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kRightBottom] + SelfVec3(0.0f, -kBlank, 0.0f));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {
 				hit = true;
@@ -298,7 +299,7 @@ void Player::OnCollision(const Enemy* enemy) {
 	velocity_ += SelfVec3(0.0f, kJumpAcceleration, 0.0f);
 }
 
-SelfVec3 Player::CornerPosition(const Vector3& center, Corner corner) {
+SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3&center, Corner corner) {
 	SelfVec3 offsetTable[kNumCorner] = {
 	    {+kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
 	    {-kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
@@ -306,7 +307,7 @@ SelfVec3 Player::CornerPosition(const Vector3& center, Corner corner) {
 	    {-kWidth / 2.0f, +kHeight / 2.0f, 0.0f},
 	};
 
-	return ChangeSelfVec3(center) + offsetTable[static_cast<uint32_t>(corner)];
+	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
 
 SelfVec3 Player::GetWorldPosition() {
@@ -315,7 +316,7 @@ SelfVec3 Player::GetWorldPosition() {
 	worldPos.y = worldTransform_.translation_.y;
 	worldPos.z = worldTransform_.translation_.z;
 
-	return ChangeSelfVec3(worldPos);
+	return ToMyEngine(worldPos);
 }
 
 AABB Player::GetAABB() { return AABB(GetWorldPosition(), SelfVec2(kWidth, kHeight)); }

@@ -20,10 +20,10 @@ private:
 	float counter_ = 0.0f;
 
 	KamataEngine::ObjectColor objectColor_;
-	SelfVec4 color_;
+	NemotoLibrary::SelfVec4 color_;
 
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
 	void Draw();
 };

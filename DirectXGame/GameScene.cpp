@@ -1,7 +1,8 @@
 #include "GameScene.h"
-#include "Matrix.h"
+#include "SelfMatrix.h"
 
 using namespace KamataEngine;
+using namespace NemotoLibrary;
 
 GameScene::GameScene() {}
 
@@ -55,7 +56,7 @@ void GameScene::Initialize() {
 	GenerateBlocks();
 
 	//======プレイヤー======
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
+	SelfVec3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
 	player_->Initialize(playerModel_, &camera_, playerPosition);
@@ -66,7 +67,7 @@ void GameScene::Initialize() {
 	enemyModel_ = Model::CreateFromOBJ("Enemy", true);
 	for (int i = 0; i < 3; i++) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
+		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
 		newEnemy->Initialize(enemyModel_, &camera_, enemyPosition);
 
 		enemies_.push_back(newEnemy);
@@ -203,7 +204,7 @@ void GameScene::GenerateBlocks() {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
 				worldTransFormBlocks_[i][j] = worldTransform;
-				worldTransFormBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+				worldTransFormBlocks_[i][j]->translation_ = ToKamataEngine(mapChipField_->GetMapChipPositionByIndex(j, i));
 			}
 		}
 	}

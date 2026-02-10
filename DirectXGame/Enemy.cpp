@@ -9,12 +9,13 @@
 #include <numbers>
 
 using namespace KamataEngine;
+using namespace NemotoLibrary;
 
-void Enemy::Initialize(Model* model, Camera* camera, const Vector3& position) {
+void Enemy::Initialize(Model* model, Camera* camera, const SelfVec3& position) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = position;
+	worldTransform_.translation_ = ToKamataEngine(position);
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> * -1.5f;
 
 	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
@@ -24,7 +25,7 @@ void Enemy::Initialize(Model* model, Camera* camera, const Vector3& position) {
 }
 
 void Enemy::Update() {
-	worldTransform_.translation_ = ChangeVector3(velocity_ + worldTransform_.translation_);
+	worldTransform_.translation_ = ToKamataEngine(velocity_ + worldTransform_.translation_);
 
 	// 歩きアニメーション
 	walkTimer_ += 1.0f / 60.0f;
@@ -44,7 +45,7 @@ SelfVec3 Enemy::GetWorldPosition() {
 	worldPos.y = worldTransform_.translation_.y;
 	worldPos.z = worldTransform_.translation_.z;
 
-	return ChangeSelfVec3(worldPos);
+	return ToMyEngine(worldPos);
 }
 
 AABB Enemy::GetAABB() { return AABB(GetWorldPosition(), SelfVec2(kWidth, kHeight)); }

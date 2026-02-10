@@ -163,7 +163,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChipField.cpp" />
     <ClCompile Include="mathTypes.cpp" />
-    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="SelfMatrix.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SelfVector.cpp" />
     <ClCompile Include="Skydome.cpp" />
@@ -276,7 +276,7 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="MapChipField.h" />
     <ClInclude Include="mathTypes.h" />
-    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="SelfMatrix.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SelfVector.h" />
     <ClInclude Include="Skydome.h" />
