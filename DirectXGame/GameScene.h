@@ -11,6 +11,13 @@
 
 class GameScene {
 private:
+	enum class Phase {
+		kPlay,
+		kDeath
+	};
+
+	Phase phase_;
+
 	KamataEngine::Camera camera_;
 
 	//カメラコントローラー
@@ -45,6 +52,10 @@ private:
 	// デバック
 	bool isDebugCameraActive_ = false;
 	KamataEngine::DebugCamera* debugCamera_ = nullptr;
+
+	void GamePlayPhaseUpdate();
+	void DeathPhaseUpdate();
+	void ChangePhase();
 
 public:
 	GameScene();

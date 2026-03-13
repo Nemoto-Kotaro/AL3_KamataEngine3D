@@ -11,7 +11,6 @@ GameScene::~GameScene() {
 	delete playerModel_;
 	delete player_;
 
-
 	//=====エネミー=====
 	delete enemyModel_;
 	for (Enemy* enemies : enemies_) {
@@ -32,7 +31,6 @@ GameScene::~GameScene() {
 	//======パーティクル======
 	delete deathParticles_;
 
-
 	//=====天球=====
 	delete skyDomeModel_;
 	delete skyDome_;
@@ -43,6 +41,7 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
+	phase_ = Phase::kPlay;
 
 	//======カメラ======
 	camera_.farZ = 2000.0f;
@@ -73,9 +72,8 @@ void GameScene::Initialize() {
 		enemies_.push_back(newEnemy);
 	}
 
-	
 	//=====パーティクル=====
-	particleModel_ = Model::CreateFromOBJ("Particle",true);
+	particleModel_ = Model::CreateFromOBJ("Particle", true);
 	deathParticles_ = new DeathParticles;
 	deathParticles_->Initialize(particleModel_, &camera_, playerPosition);
 
@@ -95,40 +93,39 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	GameScene::ChangePhase();
+
+	switch (phase_) {
+	case Phase::kPlay:
+		GamePlayPhaseUpdate();
+		break;
+	case Phase::kDeath:
+		DeathPhaseUpdate();
+		break;
+	default:
+		break;
+	}
+}
+
+
+///==========================
+/// ゲームフェーズの処理
+///==========================
+void GameScene::GamePlayPhaseUpdate() {
+	// 天球
+	skyDome_->Update();
+
 	// プレイヤー
 	player_->Update();
 
 	// エネミー
-
 	for (Enemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Update();
 		}
 	}
 
-	// ブロック
-	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
-		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
-			if (!worldTransFormBlock) {
-				continue;
-			}
-
-			WorldTransformUpdate(*worldTransFormBlock);
-		}
-	}
-
-
-	
-	//======パーティクル======
-	if (deathParticles_ != nullptr) {
-		deathParticles_->Update();
-	}
-
-
-	// 天球
-	skyDome_->Update();
-
-// デバック
+	// デバックカメラ
 #ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
@@ -144,15 +141,73 @@ void GameScene::Update() {
 		camaraController_->Update();
 	}
 
+	// ブロック
+	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
+		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
+			if (!worldTransFormBlock) {
+				continue;
+			}
 
+			WorldTransformUpdate(*worldTransFormBlock);
+		}
+	}
 
-	//当たり判定をおこなう
+	// 当たり判定をおこなう
 	CheckAllCollisions();
-
-
-
 }
 
+
+///==========================
+/// デスフェーズの処理
+///==========================
+void GameScene::DeathPhaseUpdate() {
+	// 天球
+	skyDome_->Update();
+
+
+	// エネミー
+	for (Enemy* enemies : enemies_) {
+		if (enemies != nullptr) {
+			enemies->Update();
+		}
+	}
+
+	//======デスパーティクル======
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Update();
+	}
+
+	// デバックカメラ
+#ifdef _DEBUG
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+		isDebugCameraActive_ = !isDebugCameraActive_;
+	}
+#endif // _DEBUG
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		camera_.matView = debugCamera_->GetCamera().matView;
+		camera_.matProjection = debugCamera_->GetCamera().matProjection;
+		camera_.TransferMatrix();
+	} else {
+		camaraController_->Update();
+	}
+
+	// ブロック
+	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
+		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
+			if (!worldTransFormBlock) {
+				continue;
+			}
+
+			WorldTransformUpdate(*worldTransFormBlock);
+		}
+	}
+}
+
+///==========================
+/// 描画処理
+///==========================
 void GameScene::Draw() {
 	Model::PreDraw();
 	// 天球
@@ -168,8 +223,7 @@ void GameScene::Draw() {
 		}
 	}
 
-
-	//パーティクル
+	// パーティクル
 	if (deathParticles_ != nullptr) {
 		deathParticles_->Draw();
 	}
@@ -188,6 +242,10 @@ void GameScene::Draw() {
 	Model::PostDraw();
 }
 
+
+///==========================
+/// ブロック生成
+///==========================
 void GameScene::GenerateBlocks() {
 
 	uint32_t kNumBlockVertical = mapChipField_->GetNumBlockVertical();
@@ -211,6 +269,9 @@ void GameScene::GenerateBlocks() {
 }
 
 
+///==========================
+/// 衝突確認
+///==========================
 void GameScene::CheckAllCollisions() {
 #pragma region playerToEnemy
 	AABB aabb1 = player_->GetAABB();
@@ -224,4 +285,28 @@ void GameScene::CheckAllCollisions() {
 	}
 
 #pragma endregion
+}
+
+
+
+///==========================
+///フェーズチェンジ
+///==========================
+void GameScene::ChangePhase() {
+	switch (phase_) {
+	case Phase::kPlay:
+		if (player_->IsDead()) {
+			phase_ = Phase::kDeath;
+			const SelfVec3& deathParticlesPosition = player_->GetWorldPosition();
+
+			deathParticles_ = new DeathParticles;
+			deathParticles_->Initialize(particleModel_, &camera_, deathParticlesPosition);
+		}
+		break;
+	case Phase::kDeath:
+
+		break;
+	default:
+		break;
+	}
 }

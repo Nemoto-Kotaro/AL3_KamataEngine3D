@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include "KamataEngine.h"
 #include "GameScene.h"
+#include "TitleScene.h"
 
 using namespace KamataEngine;
 
@@ -12,6 +13,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 	GameScene* gameScene = new GameScene();
+	TitleScene* titleScene = nullptr;
+
+	titleScene = new TitleScene();
+	titleScene->Initialize();
+
 	gameScene->Initialize();
 
 	while (true) {
@@ -26,7 +32,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		imguiManager->Begin();
 
 
-		gameScene->Update();
+		titleScene->Update();
 
 
 		imguiManager->End();
@@ -35,7 +41,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 描画処理
 		//============================
 		dxCommon->PreDraw();
-		gameScene->Draw();
+		titleScene->Draw();
 
 		AxisIndicator::GetInstance()->Draw();
 
@@ -44,8 +50,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	}
 
-	delete gameScene;
-	gameScene = nullptr;
+	delete titleScene;
+	titleScene = nullptr;
 	KamataEngine::Finalize();
 	return 0;
 }

@@ -16,9 +16,6 @@
     <Filter Include="シェーダー ファイル">
       <UniqueIdentifier>{718c7f4c-fc51-40ad-a221-b9456a7a1a3c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\GameScene.h">
-      <UniqueIdentifier>{5bdd04ef-95b4-416f-9148-65daf70ff70e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\MapChipField">
       <UniqueIdentifier>{0059c5e8-de0c-43d6-beb3-057708ad561a}</UniqueIdentifier>
     </Filter>
@@ -67,13 +64,22 @@
     <Filter Include="ソース ファイル\NemotoLibrary\AABB">
       <UniqueIdentifier>{b7b42939-9e07-4d76-945e-d80e9a419909}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{0c9cee59-b053-407b-b4ab-1056b6ee509e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\GameScene.h">
+      <UniqueIdentifier>{5bdd04ef-95b4-416f-9148-65daf70ff70e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\TitleScene">
+      <UniqueIdentifier>{9e57a720-c76e-4649-a3f4-7d5ea11930da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
-      <Filter>ソース ファイル\GameScene.h</Filter>
+      <Filter>ソース ファイル\Scene\GameScene.h</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\Character\Player</Filter>
@@ -110,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="AABB.cpp">
       <Filter>ソース ファイル\NemotoLibrary\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>ソース ファイル\Scene\TitleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,7 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameScene.h">
-      <Filter>ソース ファイル\GameScene.h</Filter>
+      <Filter>ソース ファイル\Scene\GameScene.h</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>ソース ファイル\Character\Player</Filter>
@@ -203,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="AABB.h">
       <Filter>ソース ファイル\NemotoLibrary\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>ソース ファイル\Scene\TitleScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

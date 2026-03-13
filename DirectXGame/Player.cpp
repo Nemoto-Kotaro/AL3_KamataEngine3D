@@ -296,7 +296,8 @@ void Player::IsHitWall(const CollisionMapInfo& info) {
 
 void Player::OnCollision(const Enemy* enemy) { 
 	(void)enemy;
-	velocity_ += SelfVec3(0.0f, kJumpAcceleration, 0.0f);
+
+	isDead_ = true;
 }
 
 SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3&center, Corner corner) {

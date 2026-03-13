@@ -45,6 +45,10 @@ private:
 
 	KamataEngine::Camera* camera_ = nullptr;
 
+	//デスフラグ
+	bool isDead_ = false;
+
+
 	// 当たり判定
 	MapChipField* mapChipField_ = nullptr;
 	static inline const float kWidth = 0.8f;
@@ -94,12 +98,17 @@ public:
 	void Update();
 	void Draw();
 
+	
+	void OnCollision(const Enemy* enemy);
+
+
+	//ゲッタセッタ系
 	NemotoLibrary::SelfVec3 GetWorldPosition();
 	NemotoLibrary::AABB GetAABB();
 	
+
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 	KamataEngine::WorldTransform& GetWorldTransform() { return worldTransform_; };
 	const NemotoLibrary::SelfVec3& GetVelocity() const { return velocity_; };
-
-	void OnCollision(const Enemy* enemy);
+	bool IsDead() const { return isDead_; };
 };
