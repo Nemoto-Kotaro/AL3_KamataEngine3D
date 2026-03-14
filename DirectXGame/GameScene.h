@@ -18,6 +18,10 @@ private:
 
 	Phase phase_;
 
+
+	//終了フラグ
+	bool finished_ = false;
+
 	KamataEngine::Camera camera_;
 
 	//カメラコントローラー
@@ -66,4 +70,7 @@ public:
 
 	void CheckAllCollisions();
 	void GenerateBlocks();
+
+	//ゲッターセッター
+	bool IsFinished() const { return finished_; };
 };

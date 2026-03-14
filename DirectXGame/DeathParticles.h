@@ -26,4 +26,6 @@ public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
 	void Draw();
+
+	bool IsFinished() const { return isFinished_; };
 };

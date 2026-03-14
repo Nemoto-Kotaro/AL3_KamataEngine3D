@@ -203,6 +203,12 @@ void GameScene::DeathPhaseUpdate() {
 			WorldTransformUpdate(*worldTransFormBlock);
 		}
 	}
+
+
+	//終了条件を満たしたらシーンチェンジのフラグを立てる
+	if (deathParticles_ && deathParticles_->IsFinished()) {
+		finished_ = true;
+	}
 }
 
 ///==========================
