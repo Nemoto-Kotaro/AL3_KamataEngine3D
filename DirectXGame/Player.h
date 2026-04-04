@@ -3,6 +3,7 @@
 #include "SelfVector.h"
 #include "Character.h"
 #include "AABB.h"
+#include "SelfVector.h"
 class Enemy;
 
 //前方宣言
@@ -16,7 +17,7 @@ struct CollisionMapInfo {
 	bool isCeilingHit = false;
 	bool isGroundHit = false;
 	bool isWallHit = false;
-	KamataEngine::Vector3 MoveOffset;
+	NemotoLibrary::SelfVec3 MoveOffset;
 };
 
 enum Corner {
@@ -44,6 +45,10 @@ private:
 
 	KamataEngine::Camera* camera_ = nullptr;
 
+	//デスフラグ
+	bool isDead_ = false;
+
+
 	// 当たり判定
 	MapChipField* mapChipField_ = nullptr;
 	static inline const float kWidth = 0.8f;
@@ -54,7 +59,7 @@ private:
 	static inline const float kAcceleration = 0.006f;
 	static inline const float kAttenuation = 0.07f;
 	static inline const float kLimitRunSpeed = 0.3f;
-	SelfVec3 velocity_ = {};
+	NemotoLibrary::SelfVec3 velocity_ = {};
 
 	// 回転
 	LRDirection lrDirection_ = LRDirection::kRight;
@@ -73,7 +78,7 @@ private:
 	static inline const float kAttenuationLanding = 0.03f;
 	static inline const float kAttenuationWall = 0.03f;
 
-	SelfVec3 CornerPosition(const KamataEngine::Vector3& center, Corner corner);
+	NemotoLibrary::SelfVec3 CornerPosition(const NemotoLibrary::SelfVec3& position, Corner corner);
 
 	void MoveInPut();
 	void MapCollision(CollisionMapInfo& info);
@@ -89,16 +94,21 @@ private:
 	void IsHitWall(const CollisionMapInfo& info);
 
 public:
-	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const KamataEngine::Vector3& position);
+	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
 	void Draw();
 
-	SelfVec3 GetWorldPosition();
-	AABB GetAABB();
 	
+	void OnCollision(const Enemy* enemy);
+
+
+	//ゲッタセッタ系
+	NemotoLibrary::SelfVec3 GetWorldPosition();
+	NemotoLibrary::AABB GetAABB();
+	
+
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 	KamataEngine::WorldTransform& GetWorldTransform() { return worldTransform_; };
-	const SelfVec3& GetVelocity() const { return velocity_; };
-
-	void OnCollision(const Enemy* enemy);
+	const NemotoLibrary::SelfVec3& GetVelocity() const { return velocity_; };
+	bool IsDead() const { return isDead_; };
 };

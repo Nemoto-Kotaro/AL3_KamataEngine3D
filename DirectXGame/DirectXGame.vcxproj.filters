@@ -16,9 +16,6 @@
     <Filter Include="シェーダー ファイル">
       <UniqueIdentifier>{718c7f4c-fc51-40ad-a221-b9456a7a1a3c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\GameScene.h">
-      <UniqueIdentifier>{5bdd04ef-95b4-416f-9148-65daf70ff70e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\MapChipField">
       <UniqueIdentifier>{0059c5e8-de0c-43d6-beb3-057708ad561a}</UniqueIdentifier>
     </Filter>
@@ -34,14 +31,8 @@
     <Filter Include="ソース ファイル\Function">
       <UniqueIdentifier>{2c96e982-a80d-4cbf-8d6c-deae497720c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Function\SelfMath">
-      <UniqueIdentifier>{3cefa942-8f2e-4b60-a0a3-a1c4d8138ccc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Function\WorldTransform">
       <UniqueIdentifier>{23ff1c36-d355-45cc-8f2c-eaaa57c71911}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Function\Matrix">
-      <UniqueIdentifier>{3ab7f366-0c12-4bba-ab95-e00bfd42d159}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Function\Easing">
       <UniqueIdentifier>{52e05e4f-3d54-4ffb-8be1-6aebfec6b04f}</UniqueIdentifier>
@@ -55,19 +46,43 @@
     <Filter Include="ソース ファイル\World\Skydomo">
       <UniqueIdentifier>{ba8749af-3f05-4f84-8109-92f553847711}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\NemotoLibrary">
+      <UniqueIdentifier>{27c1cf08-ff53-4e2b-8cb3-6c80713026a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect">
+      <UniqueIdentifier>{ee00ad3e-b7f5-4371-a496-e987d65314ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\NemotoLibrary\Matrix">
+      <UniqueIdentifier>{e475a283-ea81-4182-861f-3a7418170254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\NemotoLibrary\Vector">
+      <UniqueIdentifier>{d4225cca-c31d-42d4-9d65-1c0f48b87fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\NemotoLibrary\Math">
+      <UniqueIdentifier>{33a72754-ea0f-4692-a96f-66c59e1f75f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\NemotoLibrary\AABB">
+      <UniqueIdentifier>{b7b42939-9e07-4d76-945e-d80e9a419909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{0c9cee59-b053-407b-b4ab-1056b6ee509e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\GameScene.h">
+      <UniqueIdentifier>{5bdd04ef-95b4-416f-9148-65daf70ff70e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\TitleScene">
+      <UniqueIdentifier>{9e57a720-c76e-4649-a3f4-7d5ea11930da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GameScene.cpp">
-      <Filter>ソース ファイル\GameScene.h</Filter>
+      <Filter>ソース ファイル\Scene\GameScene.h</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>ソース ファイル\Function\Matrix</Filter>
     </ClCompile>
     <ClCompile Include="Skydome.cpp">
       <Filter>ソース ファイル\World\Skydomo</Filter>
@@ -81,20 +96,29 @@
     <ClCompile Include="easing.cpp">
       <Filter>ソース ファイル\Function\Easing</Filter>
     </ClCompile>
-    <ClCompile Include="mathTypes.cpp">
-      <Filter>ソース ファイル\Function\SelfMath</Filter>
-    </ClCompile>
-    <ClCompile Include="SelfVector.cpp">
-      <Filter>ソース ファイル\Function\SelfMath</Filter>
-    </ClCompile>
     <ClCompile Include="CameraController.cpp">
       <Filter>ソース ファイル\World\CameraController</Filter>
     </ClCompile>
     <ClCompile Include="Enemy.cpp">
       <Filter>ソース ファイル\Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="DeathParticles.cpp">
+      <Filter>ソース ファイル\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="SelfMatrix.cpp">
+      <Filter>ソース ファイル\NemotoLibrary\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="SelfVector.cpp">
+      <Filter>ソース ファイル\NemotoLibrary\Vector</Filter>
+    </ClCompile>
+    <ClCompile Include="mathTypes.cpp">
+      <Filter>ソース ファイル\NemotoLibrary\Math</Filter>
+    </ClCompile>
     <ClCompile Include="AABB.cpp">
-      <Filter>ソース ファイル\Function\SelfMath</Filter>
+      <Filter>ソース ファイル\NemotoLibrary\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>ソース ファイル\Scene\TitleScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,13 +172,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameScene.h">
-      <Filter>ソース ファイル\GameScene.h</Filter>
+      <Filter>ソース ファイル\Scene\GameScene.h</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>ソース ファイル\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>ソース ファイル\Function\Matrix</Filter>
     </ClInclude>
     <ClInclude Include="Skydome.h">
       <Filter>ソース ファイル\World\Skydomo</Filter>
@@ -168,23 +189,32 @@
     <ClInclude Include="easing.h">
       <Filter>ソース ファイル\Function\Easing</Filter>
     </ClInclude>
-    <ClInclude Include="mathTypes.h">
-      <Filter>ソース ファイル\Function\SelfMath</Filter>
-    </ClInclude>
-    <ClInclude Include="SelfVector.h">
-      <Filter>ソース ファイル\Function\SelfMath</Filter>
-    </ClInclude>
     <ClInclude Include="CameraController.h">
       <Filter>ソース ファイル\World\CameraController</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>ソース ファイル\Character\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="AABB.h">
-      <Filter>ソース ファイル\Function\SelfMath</Filter>
-    </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="DeathParticles.h">
+      <Filter>ソース ファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="SelfMatrix.h">
+      <Filter>ソース ファイル\NemotoLibrary\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="SelfVector.h">
+      <Filter>ソース ファイル\NemotoLibrary\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="mathTypes.h">
+      <Filter>ソース ファイル\NemotoLibrary\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="AABB.h">
+      <Filter>ソース ファイル\NemotoLibrary\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>ソース ファイル\Scene\TitleScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "KamataEngine.h"
+#include "SelfVector.h"
 #include <vector>
 
 enum class MapChipType { kBlank, kBlock };
@@ -42,7 +43,7 @@ public:
 	void ResetMapChipData();
 	void LoadMapChipCsv(const std::string& filePath);
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
-	KamataEngine::Vector3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
-	MapChip::IndexSet GetMapChipIndexSetByPosition(const KamataEngine::Vector3& position);
+	NemotoLibrary::SelfVec3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
+	MapChip::IndexSet GetMapChipIndexSetByPosition(const NemotoLibrary::SelfVec3& position);
 	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
 };

@@ -1,7 +1,8 @@
 #include "GameScene.h"
-#include "Matrix.h"
+#include "SelfMatrix.h"
 
 using namespace KamataEngine;
+using namespace NemotoLibrary;
 
 GameScene::GameScene() {}
 
@@ -9,7 +10,6 @@ GameScene::~GameScene() {
 	//=====プレイヤー=====
 	delete playerModel_;
 	delete player_;
-
 
 	//=====エネミー=====
 	delete enemyModel_;
@@ -31,7 +31,6 @@ GameScene::~GameScene() {
 	//======パーティクル======
 	delete deathParticles_;
 
-
 	//=====天球=====
 	delete skyDomeModel_;
 	delete skyDome_;
@@ -42,6 +41,7 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
+	phase_ = Phase::kPlay;
 
 	//======カメラ======
 	camera_.farZ = 2000.0f;
@@ -55,7 +55,7 @@ void GameScene::Initialize() {
 	GenerateBlocks();
 
 	//======プレイヤー======
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
+	SelfVec3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
 	player_->Initialize(playerModel_, &camera_, playerPosition);
@@ -66,15 +66,14 @@ void GameScene::Initialize() {
 	enemyModel_ = Model::CreateFromOBJ("Enemy", true);
 	for (int i = 0; i < 3; i++) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
+		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
 		newEnemy->Initialize(enemyModel_, &camera_, enemyPosition);
 
 		enemies_.push_back(newEnemy);
 	}
 
-	
 	//=====パーティクル=====
-	particleModel_ = Model::CreateFromOBJ("Particle",true);
+	particleModel_ = Model::CreateFromOBJ("Particle", true);
 	deathParticles_ = new DeathParticles;
 	deathParticles_->Initialize(particleModel_, &camera_, playerPosition);
 
@@ -94,40 +93,39 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	GameScene::ChangePhase();
+
+	switch (phase_) {
+	case Phase::kPlay:
+		GamePlayPhaseUpdate();
+		break;
+	case Phase::kDeath:
+		DeathPhaseUpdate();
+		break;
+	default:
+		break;
+	}
+}
+
+
+///==========================
+/// ゲームフェーズの処理
+///==========================
+void GameScene::GamePlayPhaseUpdate() {
+	// 天球
+	skyDome_->Update();
+
 	// プレイヤー
 	player_->Update();
 
 	// エネミー
-
 	for (Enemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Update();
 		}
 	}
 
-	// ブロック
-	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
-		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
-			if (!worldTransFormBlock) {
-				continue;
-			}
-
-			WorldTransformUpdate(*worldTransFormBlock);
-		}
-	}
-
-
-	
-	//======パーティクル======
-	if (deathParticles_ != nullptr) {
-		deathParticles_->Update();
-	}
-
-
-	// 天球
-	skyDome_->Update();
-
-// デバック
+	// デバックカメラ
 #ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
 		isDebugCameraActive_ = !isDebugCameraActive_;
@@ -143,15 +141,81 @@ void GameScene::Update() {
 		camaraController_->Update();
 	}
 
+	// ブロック
+	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
+		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
+			if (!worldTransFormBlock) {
+				continue;
+			}
 
+			WorldTransformUpdate(*worldTransFormBlock);
+		}
+	}
 
-	//当たり判定をおこなう
+	// 当たり判定をおこなう
 	CheckAllCollisions();
-
-
-
 }
 
+
+///==========================
+/// デスフェーズの処理
+///==========================
+void GameScene::DeathPhaseUpdate() {
+	// 天球
+	skyDome_->Update();
+
+
+	// エネミー
+	for (Enemy* enemies : enemies_) {
+		if (enemies != nullptr) {
+			enemies->Update();
+		}
+	}
+
+	//======デスパーティクル======
+	if (deathParticles_ != nullptr) {
+		deathParticles_->Update();
+	}
+
+	// デバックカメラ
+#ifdef _DEBUG
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+		isDebugCameraActive_ = !isDebugCameraActive_;
+	}
+#endif // _DEBUG
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		camera_.matView = debugCamera_->GetCamera().matView;
+		camera_.matProjection = debugCamera_->GetCamera().matProjection;
+		camera_.TransferMatrix();
+	} else {
+		camaraController_->Update();
+	}
+
+	
+
+	// ブロック
+	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
+		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
+			if (!worldTransFormBlock) {
+				continue;
+			}
+
+			WorldTransformUpdate(*worldTransFormBlock);
+		}
+	}
+
+
+	//終了条件を満たしたらシーンチェンジのフラグを立てる
+	if (deathParticles_ && deathParticles_->IsFinished()) {
+		finished_ = true;
+	}
+}
+
+///==========================
+/// 描画処理
+///==========================
 void GameScene::Draw() {
 	Model::PreDraw();
 	// 天球
@@ -167,8 +231,7 @@ void GameScene::Draw() {
 		}
 	}
 
-
-	//パーティクル
+	// パーティクル
 	if (deathParticles_ != nullptr) {
 		deathParticles_->Draw();
 	}
@@ -187,6 +250,10 @@ void GameScene::Draw() {
 	Model::PostDraw();
 }
 
+
+///==========================
+/// ブロック生成
+///==========================
 void GameScene::GenerateBlocks() {
 
 	uint32_t kNumBlockVertical = mapChipField_->GetNumBlockVertical();
@@ -203,13 +270,16 @@ void GameScene::GenerateBlocks() {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
 				worldTransFormBlocks_[i][j] = worldTransform;
-				worldTransFormBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+				worldTransFormBlocks_[i][j]->translation_ = ToKamataEngine(mapChipField_->GetMapChipPositionByIndex(j, i));
 			}
 		}
 	}
 }
 
 
+///==========================
+/// 衝突確認
+///==========================
 void GameScene::CheckAllCollisions() {
 #pragma region playerToEnemy
 	AABB aabb1 = player_->GetAABB();
@@ -223,4 +293,28 @@ void GameScene::CheckAllCollisions() {
 	}
 
 #pragma endregion
+}
+
+
+
+///==========================
+///フェーズチェンジ
+///==========================
+void GameScene::ChangePhase() {
+	switch (phase_) {
+	case Phase::kPlay:
+		if (player_->IsDead()) {
+			phase_ = Phase::kDeath;
+			const SelfVec3& deathParticlesPosition = player_->GetWorldPosition();
+
+			deathParticles_ = new DeathParticles;
+			deathParticles_->Initialize(particleModel_, &camera_, deathParticlesPosition);
+		}
+		break;
+	case Phase::kDeath:
+
+		break;
+	default:
+		break;
+	}
 }

@@ -21,7 +21,7 @@ private:
 
 	//移動
 	static inline const float kWalkSpeed = 0.02f;
-	SelfVec3 velocity_;
+	NemotoLibrary::SelfVec3 velocity_;
 
 	static inline const float kWalkMotionAngleStart = 0.0f;
 	static inline const float kWalkMotionAngleEnd = 20.0f;
@@ -30,12 +30,12 @@ private:
 	float walkTimer_ = 0.0f;
 
 public:
-	void Initialize(Model* model, Camera* camera, const Vector3& position);
+	void Initialize(Model* model, Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
 	void Draw();
 
 	void OnCollision(const Player* player);
 
-	SelfVec3 GetWorldPosition();
-	AABB GetAABB();
+	NemotoLibrary::SelfVec3 GetWorldPosition();
+	NemotoLibrary::AABB GetAABB();
 };

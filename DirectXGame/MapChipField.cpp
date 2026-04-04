@@ -4,6 +4,7 @@
 #include <sstream>
 
 using namespace KamataEngine;
+using namespace NemotoLibrary;
 
 // 名づけ
 namespace {
@@ -65,11 +66,11 @@ MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex
 	return mapChipData_.data[yIndex][xIndex];
 }
 
-Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) {
-	return Vector3(kBlockWidth * static_cast<float>(xIndex), kBlockHeight * static_cast<float>(kNumBlockVertical - 1 - yIndex), 0.0f);
+NemotoLibrary::SelfVec3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) {
+	return SelfVec3(kBlockWidth * static_cast<float>(xIndex), kBlockHeight * static_cast<float>(kNumBlockVertical - 1 - yIndex), 0.0f);
 }
 
-MapChip::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
+MapChip::IndexSet MapChipField::GetMapChipIndexSetByPosition(const SelfVec3& position) {
 	MapChip::IndexSet indexSet = {};
 	indexSet.xIndex = static_cast<uint32_t>((position.x + (kBlockWidth / 2.0f)) / kBlockWidth);
 	indexSet.yIndex = kNumBlockVertical - 1 - static_cast<uint32_t>((position.y + (kBlockHeight / 2.0f)) / kBlockHeight);
@@ -77,7 +78,7 @@ MapChip::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& posi
 }
 
 MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) { 
-	Vector3 center = GetMapChipPositionByIndex(xIndex,yIndex); 
+	SelfVec3 center = GetMapChipPositionByIndex(xIndex, yIndex); 
 	Rect rect;
 	rect.left = center.x - kBlockWidth / 2.0f;
 	rect.right = center.x + kBlockWidth / 2.0f;

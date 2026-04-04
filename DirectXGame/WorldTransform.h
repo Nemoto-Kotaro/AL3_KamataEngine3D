@@ -1,5 +1,5 @@
 #pragma once
 #include "KamataEngine.h"
-#include "Matrix.h"
+#include "SelfMatrix.h"
 
 void WorldTransformUpdate(KamataEngine::WorldTransform&  worldTransform);
