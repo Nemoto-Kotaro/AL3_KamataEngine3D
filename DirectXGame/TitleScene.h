@@ -1,6 +1,8 @@
-#pragma once
+ï»¿#pragma once
 #include <vector>
 #include "KamataEngine.h"
+#include "SelfVector.h"
+#include "WorldTransform.h"
 
 class TitleScene {
 private:
@@ -9,13 +11,18 @@ private:
 
 	KamataEngine::Camera camera_;
 
-	// ƒvƒŒƒCƒ„[
+
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 	KamataEngine::Model* playerModel_ = nullptr;
+	KamataEngine::WorldTransform playerWorldTransform_;
 
-	//@ƒ^ƒCƒgƒ‹•¶š
+	//ã€€ã‚¿ã‚¤ãƒˆãƒ«æ–‡å­—
 	KamataEngine::Model* titleModel_ = nullptr;
+	KamataEngine::WorldTransform titleWorldTransform_;
 
-
+	float swayTimer = 0.0f;
+	static inline const float swayDuration = 1.0f; //å¾€å¾©é–“éš”
+	
 
 public:
 	TitleScene();

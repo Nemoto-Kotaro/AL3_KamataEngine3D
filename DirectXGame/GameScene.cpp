@@ -193,6 +193,8 @@ void GameScene::DeathPhaseUpdate() {
 		camaraController_->Update();
 	}
 
+	
+
 	// ブロック
 	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
 		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
