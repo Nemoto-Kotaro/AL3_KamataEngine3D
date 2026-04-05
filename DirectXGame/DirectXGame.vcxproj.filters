@@ -73,6 +73,9 @@
     <Filter Include="ソース ファイル\Scene\TitleScene">
       <UniqueIdentifier>{9e57a720-c76e-4649-a3f4-7d5ea11930da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Scene\Fade">
+      <UniqueIdentifier>{ee4cb295-2108-4871-a323-a068a1127008}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="TitleScene.cpp">
       <Filter>ソース ファイル\Scene\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Fade.cpp">
+      <Filter>ソース ファイル\Scene\Fade</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +221,9 @@
     </ClInclude>
     <ClInclude Include="TitleScene.h">
       <Filter>ソース ファイル\Scene\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Fade.h">
+      <Filter>ソース ファイル\Scene\Fade</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

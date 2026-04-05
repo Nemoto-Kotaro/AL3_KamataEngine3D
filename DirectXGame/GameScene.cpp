@@ -7,6 +7,9 @@ using namespace NemotoLibrary;
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
+	//===フェード===
+	delete fade_;
+
 	//=====プレイヤー=====
 	delete playerModel_;
 	delete player_;
@@ -41,7 +44,12 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
-	phase_ = Phase::kPlay;
+
+	//======フェード初期化======
+	fade_ = new Fade();
+	fade_->Initialize();
+	fade_->Start(Fade::Status::FadeIn, fadeInDuration_);
+	phase_ = Phase::kFadeIn;
 
 	//======カメラ======
 	camera_.farZ = 2000.0f;
@@ -74,8 +82,6 @@ void GameScene::Initialize() {
 
 	//=====パーティクル=====
 	particleModel_ = Model::CreateFromOBJ("Particle", true);
-	deathParticles_ = new DeathParticles;
-	deathParticles_->Initialize(particleModel_, &camera_, playerPosition);
 
 	//======天球======
 	skyDomeModel_ = Model::CreateFromOBJ("CelestialSphere", true);
@@ -95,6 +101,8 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	GameScene::ChangePhase();
 
+	//======更新処理=======
+
 	switch (phase_) {
 	case Phase::kPlay:
 		GamePlayPhaseUpdate();
@@ -102,11 +110,59 @@ void GameScene::Update() {
 	case Phase::kDeath:
 		DeathPhaseUpdate();
 		break;
+	case GameScene::Phase::kFadeIn:
+	case GameScene::Phase::kFadeOut:
+		fade_->Update();
+		break;
 	default:
 		break;
 	}
+
+	//======カメラ======
+#ifdef _DEBUG
+	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+		isDebugCameraActive_ = !isDebugCameraActive_;
+	}
+#endif // _DEBUG
+
+	if (isDebugCameraActive_) {
+		debugCamera_->Update();
+		camera_.matView = debugCamera_->GetCamera().matView;
+		camera_.matProjection = debugCamera_->GetCamera().matProjection;
+		camera_.TransferMatrix();
+	} else {
+		camaraController_->Update();
+	}
+
+	//======matrix更新======
+	UpdateMatrix();
 }
 
+//位置の更新は別にしておく
+void GameScene::UpdateMatrix() { 
+	skyDome_->UpdateMatrix();
+	player_->UpdateMatrix(); 
+	for (Enemy* enemies : enemies_) {
+		if (enemies != nullptr) {
+			enemies->UpdateMatrix();
+		}
+	}
+
+	// ブロック
+	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
+		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
+			if (!worldTransFormBlock) {
+				continue;
+			}
+
+			WorldTransformUpdate(*worldTransFormBlock);
+		}
+	}
+
+	if (deathParticles_ != nullptr) {
+		deathParticles_->UpdateMatrix();
+	}
+}
 
 ///==========================
 /// ゲームフェーズの処理
@@ -125,37 +181,9 @@ void GameScene::GamePlayPhaseUpdate() {
 		}
 	}
 
-	// デバックカメラ
-#ifdef _DEBUG
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-		isDebugCameraActive_ = !isDebugCameraActive_;
-	}
-#endif // _DEBUG
-
-	if (isDebugCameraActive_) {
-		debugCamera_->Update();
-		camera_.matView = debugCamera_->GetCamera().matView;
-		camera_.matProjection = debugCamera_->GetCamera().matProjection;
-		camera_.TransferMatrix();
-	} else {
-		camaraController_->Update();
-	}
-
-	// ブロック
-	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
-		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
-			if (!worldTransFormBlock) {
-				continue;
-			}
-
-			WorldTransformUpdate(*worldTransFormBlock);
-		}
-	}
-
 	// 当たり判定をおこなう
 	CheckAllCollisions();
 }
-
 
 ///==========================
 /// デスフェーズの処理
@@ -163,7 +191,6 @@ void GameScene::GamePlayPhaseUpdate() {
 void GameScene::DeathPhaseUpdate() {
 	// 天球
 	skyDome_->Update();
-
 
 	// エネミー
 	for (Enemy* enemies : enemies_) {
@@ -177,39 +204,11 @@ void GameScene::DeathPhaseUpdate() {
 		deathParticles_->Update();
 	}
 
-	// デバックカメラ
-#ifdef _DEBUG
-	if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-		isDebugCameraActive_ = !isDebugCameraActive_;
-	}
-#endif // _DEBUG
 
-	if (isDebugCameraActive_) {
-		debugCamera_->Update();
-		camera_.matView = debugCamera_->GetCamera().matView;
-		camera_.matProjection = debugCamera_->GetCamera().matProjection;
-		camera_.TransferMatrix();
-	} else {
-		camaraController_->Update();
-	}
-
-	
-
-	// ブロック
-	for (std::vector<WorldTransform*>& worldTransFormBlockLine : worldTransFormBlocks_) {
-		for (WorldTransform* worldTransFormBlock : worldTransFormBlockLine) {
-			if (!worldTransFormBlock) {
-				continue;
-			}
-
-			WorldTransformUpdate(*worldTransFormBlock);
-		}
-	}
-
-
-	//終了条件を満たしたらシーンチェンジのフラグを立てる
+	// 終了条件を満たしたらシーンチェンジのフラグを立てる
 	if (deathParticles_ && deathParticles_->IsFinished()) {
-		finished_ = true;
+		fade_->Start(Fade::Status::FadeOut, fadeOutDuration_);
+		phase_ = Phase::kFadeOut;
 	}
 }
 
@@ -248,8 +247,9 @@ void GameScene::Draw() {
 	}
 
 	Model::PostDraw();
-}
 
+	fade_->Draw();
+}
 
 ///==========================
 /// ブロック生成
@@ -276,7 +276,6 @@ void GameScene::GenerateBlocks() {
 	}
 }
 
-
 ///==========================
 /// 衝突確認
 ///==========================
@@ -295,13 +294,17 @@ void GameScene::CheckAllCollisions() {
 #pragma endregion
 }
 
-
-
 ///==========================
-///フェーズチェンジ
+/// フェーズチェンジ
 ///==========================
 void GameScene::ChangePhase() {
 	switch (phase_) {
+	case Phase::kFadeIn:
+		if (fade_->IsFinished()) {
+			phase_ = Phase::kPlay;
+		}
+
+		break;
 	case Phase::kPlay:
 		if (player_->IsDead()) {
 			phase_ = Phase::kDeath;
@@ -313,6 +316,11 @@ void GameScene::ChangePhase() {
 		break;
 	case Phase::kDeath:
 
+		break;
+	case Phase::kFadeOut:
+		if (fade_->IsFinished()) {
+			finished_ = true;
+		}
 		break;
 	default:
 		break;

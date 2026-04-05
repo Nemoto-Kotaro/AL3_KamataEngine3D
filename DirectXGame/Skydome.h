@@ -12,6 +12,7 @@ private:
 public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera);
 	void Update();
+	void UpdateMatrix();
 	void Draw();
 
 };
