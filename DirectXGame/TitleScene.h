@@ -3,14 +3,25 @@
 #include "KamataEngine.h"
 #include "SelfVector.h"
 #include "WorldTransform.h"
+#include "Fade.h"
 
 class TitleScene {
 private:
+	enum class Phase {
+		kFadeIn,
+		kMain,
+		kFadeOut,
+	};
+
 
 	bool finished_ = false;
+	Phase phase_ = Phase::kFadeIn;
+
 
 	KamataEngine::Camera camera_;
 
+	//フェード
+	Fade* fade_ = nullptr;
 
 	// プレイヤー
 	KamataEngine::Model* playerModel_ = nullptr;
