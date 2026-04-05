@@ -1,7 +1,7 @@
 #include "DeathParticles.h"
 #include "SelfMatrix.h"
-#include "mathTypes.h"
 #include "WorldTransform.h"
+#include "mathTypes.h"
 #include <algorithm>
 #include <cassert>
 #include <numbers>
@@ -43,8 +43,10 @@ void DeathParticles::Update() {
 	}
 
 	color_.w = std::clamp(1.0f - Ratio(counter_, 0.0f, kDuration), 0.0f, 1.0f);
-	objectColor_.SetColor(ToKamataEngine( color_));
+	objectColor_.SetColor(ToKamataEngine(color_));
+}
 
+void DeathParticles::UpdateMatrix() {
 	for (WorldTransform& worldTransform : worldTransforms_) {
 		WorldTransformUpdate(worldTransform);
 	}
@@ -56,6 +58,6 @@ void DeathParticles::Draw() {
 	}
 
 	for (WorldTransform& worldTransform : worldTransforms_) {
-		model_->Draw(worldTransform, *camera_,&objectColor_);
+		model_->Draw(worldTransform, *camera_, &objectColor_);
 	}
 }

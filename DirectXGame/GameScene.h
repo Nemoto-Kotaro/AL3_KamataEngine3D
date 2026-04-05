@@ -8,12 +8,15 @@
 #include "MapChipField.h"
 #include "CameraController.h"
 #include "DeathParticles.h"
+#include "Fade.h"
 
 class GameScene {
 private:
 	enum class Phase {
+		kFadeIn,
 		kPlay,
-		kDeath
+		kDeath,
+		kFadeOut
 	};
 
 	Phase phase_;
@@ -21,6 +24,11 @@ private:
 
 	//終了フラグ
 	bool finished_ = false;
+
+	//フェード
+	Fade* fade_ = nullptr;
+	const float fadeInDuration_ = 2.0f;
+	const float fadeOutDuration_ = 2.0f;
 
 	KamataEngine::Camera camera_;
 
@@ -66,6 +74,7 @@ public:
 	~GameScene();
 	void Initialize();
 	void Update();
+	void UpdateMatrix();
 	void Draw();
 
 	void CheckAllCollisions();

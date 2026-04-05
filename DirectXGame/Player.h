@@ -96,6 +96,7 @@ private:
 public:
 	void Initialize(KamataEngine::Model* model, KamataEngine::Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
+	void UpdateMatrix();
 	void Draw();
 
 	

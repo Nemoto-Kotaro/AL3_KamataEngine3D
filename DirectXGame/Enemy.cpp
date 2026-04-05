@@ -17,6 +17,7 @@ void Enemy::Initialize(Model* model, Camera* camera, const SelfVec3& position) {
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = ToKamataEngine(position);
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> * -1.5f;
+	WorldTransformUpdate(worldTransform_);
 
 	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
 	camera_ = camera;
@@ -33,9 +34,9 @@ void Enemy::Update() {
 	float param = std::sin(walkTimer_);
 	float degree = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
 	worldTransform_.rotation_.x = DegTheta(degree);
-
-	WorldTransformUpdate(worldTransform_);
 }
+
+void Enemy::UpdateMatrix() { WorldTransformUpdate(worldTransform_); }
 
 void Enemy::Draw() { model_->Draw(worldTransform_, *camera_); }
 

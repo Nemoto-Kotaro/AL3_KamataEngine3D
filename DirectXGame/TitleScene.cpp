@@ -26,7 +26,8 @@ void TitleScene::Initialize() {
 	//フェード初期化
 	fade_ = new Fade();
 	fade_->Initialize();
-	fade_->Start(Fade::Status::FadeIn,3.0f);
+	fade_->Start(Fade::Status::FadeIn, fadeInDuration_);
+	phase_ = Phase::kFadeIn;
 
 	//プレイヤー初期化
 	playerModel_ = Model::CreateFromOBJ("Player", true);
@@ -42,11 +43,34 @@ void TitleScene::Initialize() {
 }
 
 void TitleScene::Update() {
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
-		finished_ = true;
+
+	switch (phase_) {
+	case TitleScene::Phase::kFadeIn:
+		if (fade_->IsFinished()) {
+			phase_ = Phase::kMain;
+		}
+
+		break;
+	case TitleScene::Phase::kMain:
+		if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+			fade_->Start(Fade::Status::FadeOut, fadeOutDuration_);
+			phase_ = Phase::kFadeOut;
+		}
+
+		break;
+	case TitleScene::Phase::kFadeOut:
+		if (fade_->IsFinished()) {
+			finished_ = true;
+		}
+
+		break;
+	default:
+		break;
 	}
 
-	//フェード処理
+	
+	
+	// フェード処理
 	fade_->Update();
 
 
@@ -63,7 +87,7 @@ void TitleScene::Update() {
 		t = 2.0f - t;
 	}
 
-	float titleSwayPosY = Lerp(1.1f, 1.3f, Ease::InOutSine(t));
+	float titleSwayPosY = Lerp(1.1f, 1.3f, Ease::InQuad(t));
 	titleWorldTransform_.translation_.y = titleSwayPosY;
 
 	WorldTransformUpdate(playerWorldTransform_);
@@ -85,6 +109,13 @@ void TitleScene::Draw() {
 
 	Model::PostDraw();
 
-	//フェード描画
-	fade_->Draw();
+	switch (phase_) {
+	case TitleScene::Phase::kFadeIn:
+	case TitleScene::Phase::kFadeOut:
+		// フェード描画
+		fade_->Draw();
+		break;
+	default:
+		break;
+	}
 }

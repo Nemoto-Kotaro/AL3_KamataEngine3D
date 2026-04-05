@@ -18,6 +18,7 @@ void Player::Initialize(Model* model, Camera* camera, const SelfVec3&position) {
 	worldTransform_.translation_ = ToKamataEngine(position);
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> * -0.5f;
 
+	WorldTransformUpdate(worldTransform_);
 	camera_ = camera;
 }
 
@@ -53,9 +54,9 @@ void Player::Update() {
 
 		worldTransform_.rotation_.y = Lerp(turnFirstRotationY_, destinationRotationY, Ease::InOutSine(timeRatio));
 	}
-
-	WorldTransformUpdate(worldTransform_);
 }
+
+void Player::UpdateMatrix() { WorldTransformUpdate(worldTransform_); }
 
 void Player::Draw() { model_->Draw(worldTransform_, *camera_); }
 

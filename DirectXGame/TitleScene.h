@@ -22,6 +22,8 @@ private:
 
 	//フェード
 	Fade* fade_ = nullptr;
+	const float fadeInDuration_ = 2.0f;
+	const float fadeOutDuration_ = 2.0f;
 
 	// プレイヤー
 	KamataEngine::Model* playerModel_ = nullptr;

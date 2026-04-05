@@ -32,6 +32,7 @@ private:
 public:
 	void Initialize(Model* model, Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
+	void UpdateMatrix();
 	void Draw();
 
 	void OnCollision(const Player* player);
