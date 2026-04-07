@@ -38,6 +38,8 @@ private:
 	//プレイヤー
 	KamataEngine::Model* playerModel_ = nullptr;
 	Player* player_ = nullptr;
+	KamataEngine::Model* playerAttackModel_ = nullptr;
+
 
 	//エネミー
 	KamataEngine::Model* enemyModel_ = nullptr;
