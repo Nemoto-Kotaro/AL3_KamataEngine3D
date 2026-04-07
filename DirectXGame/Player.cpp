@@ -11,6 +11,9 @@
 using namespace KamataEngine;
 using namespace NemotoLibrary;
 
+
+///=============初期化処理=============
+
 void Player::Initialize(Model* model, Model* modelAttack, Camera* camera, const SelfVec3& position) {
 	assert(model);
 	model_ = model;
@@ -170,7 +173,6 @@ void Player::BehaviorAttackUpdate() {
 		break;
 	}
 	}
-
 }
 
 ///=============更新処理の関数=============
@@ -410,13 +412,17 @@ void Player::IsHitWall(const CollisionMapInfo& info) {
 	}
 }
 
+#pragma endregion
+
 void Player::OnCollision(const Enemy* enemy) {
+	if (IsAttack()) {
+		return;
+	}
+
 	(void)enemy;
 
 	isDead_ = true;
 }
-
-#pragma endregion
 
 SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3& center, Corner corner) {
 	SelfVec3 offsetTable[kNumCorner] = {
@@ -441,3 +447,10 @@ SelfVec3 Player::GetWorldPosition() {
 }
 
 AABB Player::GetAABB() { return AABB(GetWorldPosition(), SelfVec2(kWidth, kHeight)); }
+
+bool Player::IsAttack() const {
+	if (behavior_ == Behavior::kAttack) {
+		return true;
+	}
+	return false;
+}

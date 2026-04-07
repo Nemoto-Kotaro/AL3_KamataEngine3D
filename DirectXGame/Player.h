@@ -139,4 +139,5 @@ public:
 	KamataEngine::WorldTransform& GetWorldTransform() { return worldTransform_; };
 	const NemotoLibrary::SelfVec3& GetVelocity() const { return velocity_; };
 	bool IsDead() const { return isDead_; };
+	bool IsAttack() const;
 };
