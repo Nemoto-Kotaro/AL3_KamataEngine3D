@@ -11,29 +11,58 @@
 using namespace KamataEngine;
 using namespace NemotoLibrary;
 
-void Player::Initialize(Model* model, Camera* camera, const SelfVec3&position) {
+void Player::Initialize(Model* model, Model* modelAttack, Camera* camera, const SelfVec3& position) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = ToKamataEngine(position);
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> * -0.5f;
 
-	WorldTransformUpdate(worldTransform_);
+	assert(modelAttack);
+	modelAttack_ = modelAttack;
+	worldTransformAttack_.Initialize();
+
 	camera_ = camera;
 }
 
+///=============更新処理=============
+
 void Player::Update() {
 
-	// 移動入力
-	MoveInPut();
+	if (behaviorRequest_ != Behavior::kUnknown) {
+		behavior_ = behaviorRequest_;
+		switch (behavior_) {
+		case Player::Behavior::kRoot:
+			BehaviorRootInitialize();
+			break;
+		case Player::Behavior::kAttack:
+			BehaviorAttackInitialize();
+			break;
+		default:
+			break;
+		}
+
+		behaviorRequest_ = Behavior::kUnknown;
+	}
+
+	switch (behavior_) {
+	case Player::Behavior::kRoot:
+		BehaviorRootUpdate();
+		break;
+	case Player::Behavior::kAttack:
+		BehaviorAttackUpdate();
+		break;
+	default:
+		break;
+	}
+
 	CollisionMapInfo collisionMapInfo = {};
 	collisionMapInfo.MoveOffset = velocity_;
-
 	// 衝突チェック
 	MapCollision(collisionMapInfo);
 
 	// 結果を反映して移動
-	worldTransform_.translation_ =  ToKamataEngine(collisionMapInfo.MoveOffset + worldTransform_.translation_);
+	worldTransform_.translation_ = ToKamataEngine(collisionMapInfo.MoveOffset + worldTransform_.translation_);
 
 	// 天井に接している場合の処理
 	IsHitCeiling(collisionMapInfo);
@@ -56,11 +85,95 @@ void Player::Update() {
 	}
 }
 
-void Player::UpdateMatrix() { WorldTransformUpdate(worldTransform_); }
+void Player::UpdateMatrix() {
+	WorldTransformUpdate(worldTransform_);
 
-void Player::Draw() { model_->Draw(worldTransform_, *camera_); }
+	if (behavior_ == Behavior::kAttack) {
+		worldTransformAttack_.translation_ = worldTransform_.translation_;
+		worldTransformAttack_.rotation_ = worldTransform_.rotation_;
+		WorldTransformUpdate(worldTransformAttack_);
+	}
+}
 
-///=============更新処理=============
+///=============描画処理=============
+
+void Player::Draw() {
+	model_->Draw(worldTransform_, *camera_);
+	if (behavior_ == Behavior::kAttack) {
+		modelAttack_->Draw(worldTransformAttack_, *camera_);
+	}
+}
+
+//==============各ビヘイビアの処理=================
+
+//---ルートビヘイビア---
+void Player::BehaviorRootInitialize() { velocity_ = SelfVec3(0.0f, 0.0f, 0.0f); }
+
+void Player::BehaviorRootUpdate() {
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		behaviorRequest_ = Behavior::kAttack;
+	}
+
+	// 移動入力
+	MoveInPut();
+}
+
+//---アタックビヘイビア---
+void Player::BehaviorAttackInitialize() {
+	attackPhase_ = AttackPhase::kCharge;
+	attackCounter_ = 0.0f;
+}
+
+void Player::BehaviorAttackUpdate() {
+	attackCounter_ += 1.0f / 60.0f;
+
+	switch (attackPhase_) {
+	case Player::AttackPhase::kCharge:
+	default: {
+		float t = attackCounter_ / attackChargeDuration;
+		worldTransform_.scale_.z = Lerp(1.0f, 0.3f, Ease::OutSine(t));
+		worldTransform_.scale_.y = Lerp(1.0f, 1.6f, Ease::OutSine(t));
+
+		if (attackCounter_ >= attackChargeDuration) {
+			attackPhase_ = AttackPhase::kDash;
+			attackCounter_ = 0.0f;
+		}
+
+		break;
+	}
+
+	case Player::AttackPhase::kDash: {
+
+		float t = attackCounter_ / attackDashDuration;
+		worldTransform_.scale_.z = Lerp(0.3f, 1.3f, Ease::OutSine(t));
+		worldTransform_.scale_.y = Lerp(1.6f, 0.7f, Ease::OutSine(t));
+
+		if (attackCounter_ >= attackDashDuration) {
+			attackPhase_ = AttackPhase::kRecovery;
+			attackCounter_ = 0.0f;
+		}
+
+		velocity_ = kAttackVelocity;
+		if (lrDirection_ != LRDirection::kRight) {
+			velocity_.x *= -1.0f;
+		}
+
+		break;
+	}
+	case Player::AttackPhase::kRecovery: {
+		float t = attackCounter_ / attackRecoveryDuration;
+		worldTransform_.scale_.z = Lerp(1.3f, 1.0f, Ease::OutSine(t));
+		worldTransform_.scale_.y = Lerp(0.7f, 1.0f, Ease::OutSine(t));
+		if (attackCounter_ >= attackRecoveryDuration) {
+			behaviorRequest_ = Behavior::kRoot;
+		}
+		break;
+	}
+	}
+
+}
+
+///=============更新処理の関数=============
 
 // 移動入力
 void Player::MoveInPut() {
@@ -112,6 +225,8 @@ void Player::MoveInPut() {
 		velocity_.y = std::max(velocity_.y, -kLimitFallSpeed);
 	}
 }
+
+#pragma region 衝突と衝突時処理
 
 void Player::MapCollision(CollisionMapInfo& info) {
 
@@ -295,13 +410,15 @@ void Player::IsHitWall(const CollisionMapInfo& info) {
 	}
 }
 
-void Player::OnCollision(const Enemy* enemy) { 
+void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 
 	isDead_ = true;
 }
 
-SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3&center, Corner corner) {
+#pragma endregion
+
+SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3& center, Corner corner) {
 	SelfVec3 offsetTable[kNumCorner] = {
 	    {+kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
 	    {-kWidth / 2.0f, -kHeight / 2.0f, 0.0f},
@@ -311,6 +428,8 @@ SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3&center, Corner cor
 
 	return center + offsetTable[static_cast<uint32_t>(corner)];
 }
+
+///=============取得関数=============
 
 SelfVec3 Player::GetWorldPosition() {
 	Vector3 worldPos;

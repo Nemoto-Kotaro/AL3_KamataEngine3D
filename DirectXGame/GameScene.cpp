@@ -66,7 +66,8 @@ void GameScene::Initialize() {
 	SelfVec3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	player_ = new Player();
-	player_->Initialize(playerModel_, &camera_, playerPosition);
+	playerAttackModel_ = Model::CreateFromOBJ("AttackEffect", true);
+	player_->Initialize(playerModel_, playerAttackModel_, &camera_, playerPosition);
 
 	player_->SetMapChipField(mapChipField_);
 
