@@ -9,7 +9,17 @@ class Player;
 using namespace KamataEngine;
 
 class Enemy {
+public:
+	enum class Behavior { kRoot, kDeath, kUnknown };
+
 private:
+	// 振るまい
+	Behavior behavior_ = Behavior::kRoot;
+	Behavior behaviorRequest_ = Behavior::kUnknown;
+
+	// デスフラグ
+	bool isDead_ = false;
+
 	KamataEngine::WorldTransform worldTransform_;
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;
@@ -17,7 +27,8 @@ private:
 	//当たり判定
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
-
+	bool isCollisionDisabled_ = false;
+	
 
 	//移動
 	static inline const float kWalkSpeed = 0.02f;
@@ -29,6 +40,19 @@ private:
 
 	float walkTimer_ = 0.0f;
 
+	//デス演出
+	float deathCounter_ = 0.0f;
+	static inline const float deathDuration_ = 1.0f;
+
+
+
+
+	void BehaviorRootInitialize();
+	void BehaviorRootUpdate();
+
+	void BehaviorDeathInitialize();
+	void BehaviorDeathUpdate();
+
 public:
 	void Initialize(Model* model, Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
@@ -39,4 +63,6 @@ public:
 
 	NemotoLibrary::SelfVec3 GetWorldPosition();
 	NemotoLibrary::AABB GetAABB();
+	bool IsDead() const { return isDead_; };
+	bool IsCollisionDisabled() const { return isCollisionDisabled_; };
 };

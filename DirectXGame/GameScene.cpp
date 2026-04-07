@@ -175,6 +175,15 @@ void GameScene::GamePlayPhaseUpdate() {
 	// プレイヤー
 	player_->Update();
 
+	enemies_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+
+		return false;
+	});
+
 	// エネミー
 	for (Enemy* enemies : enemies_) {
 		if (enemies != nullptr) {
@@ -285,6 +294,10 @@ void GameScene::CheckAllCollisions() {
 	AABB aabb1 = player_->GetAABB();
 	AABB aabb2;
 	for (Enemy* enemy : enemies_) {
+		if (enemy->IsCollisionDisabled()) {
+			continue;
+		}
+
 		aabb2 = enemy->GetAABB();
 		if (AABBCollision(aabb1, aabb2)) {
 			player_->OnCollision(enemy);
