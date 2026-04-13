@@ -37,6 +37,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	scene = Scene::kGame;
 #endif // _DEBUG
 
+	//シーン切り替え
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene = new TitleScene();
