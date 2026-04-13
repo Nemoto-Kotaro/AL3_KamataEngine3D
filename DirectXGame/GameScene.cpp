@@ -20,6 +20,12 @@ GameScene::~GameScene() {
 		delete enemies;
 	}
 
+	//=====エフェクト=====
+	delete hitEffectModel_;
+	for (HitEffect* hitEffects : hitEffects_) {
+		delete hitEffects;
+	}
+
 	//=====ブロック=====
 	delete mapChipField_;
 	delete blockModel_;
@@ -76,10 +82,15 @@ void GameScene::Initialize() {
 	for (int i = 0; i < 3; i++) {
 		Enemy* newEnemy = new Enemy();
 		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
-		newEnemy->Initialize(enemyModel_, &camera_, enemyPosition);
+		newEnemy->Initialize(enemyModel_, &camera_, this,enemyPosition);
 
 		enemies_.push_back(newEnemy);
 	}
+
+	//=====エフェクト=====
+	hitEffectModel_ = Model::CreateFromOBJ("hitEffect", true);
+	HitEffect::SetModel(hitEffectModel_);
+	HitEffect::SetCamera(&camera_);
 
 	//=====パーティクル=====
 	particleModel_ = Model::CreateFromOBJ("Particle", true);
@@ -139,13 +150,23 @@ void GameScene::Update() {
 	UpdateMatrix();
 }
 
-//位置の更新は別にしておく
-void GameScene::UpdateMatrix() { 
+// 位置の更新は別にしておく
+void GameScene::UpdateMatrix() {
+	// 天球
 	skyDome_->UpdateMatrix();
-	player_->UpdateMatrix(); 
+	// プレイヤー
+	player_->UpdateMatrix();
+	// 敵
 	for (Enemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->UpdateMatrix();
+		}
+	}
+
+	// エフェクト
+	for (HitEffect* hitEffects : hitEffects_) {
+		if (hitEffects != nullptr) {
+			hitEffects->UpdateMatrix();
 		}
 	}
 
@@ -191,6 +212,23 @@ void GameScene::GamePlayPhaseUpdate() {
 		}
 	}
 
+	// エフェクト
+
+	hitEffects_.remove_if([](HitEffect* hitEffect) {
+		if (hitEffect->IsDead()) {
+			delete hitEffect;
+			return true;
+		}
+
+		return false;
+	});
+
+	for (HitEffect* hitEffects : hitEffects_) {
+		if (hitEffects != nullptr) {
+			hitEffects->Update();
+		}
+	}
+
 	// 当たり判定をおこなう
 	CheckAllCollisions();
 }
@@ -209,11 +247,16 @@ void GameScene::DeathPhaseUpdate() {
 		}
 	}
 
+	for (HitEffect* hitEffects : hitEffects_) {
+		if (hitEffects != nullptr) {
+			hitEffects->Update();
+		}
+	}
+
 	//======デスパーティクル======
 	if (deathParticles_ != nullptr) {
 		deathParticles_->Update();
 	}
-
 
 	// 終了条件を満たしたらシーンチェンジのフラグを立てる
 	if (deathParticles_ && deathParticles_->IsFinished()) {
@@ -237,6 +280,12 @@ void GameScene::Draw() {
 	for (Enemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Draw();
+		}
+	}
+
+	for (HitEffect* hitEffects : hitEffects_) {
+		if (hitEffects != nullptr) {
+			hitEffects->Draw();
 		}
 	}
 
@@ -339,4 +388,9 @@ void GameScene::ChangePhase() {
 	default:
 		break;
 	}
+}
+
+void GameScene::CreateHitEffect(NemotoLibrary::SelfVec3& position) {
+	HitEffect* newHitEffect = HitEffect::Create(position);
+	hitEffects_.push_back(newHitEffect);
 }

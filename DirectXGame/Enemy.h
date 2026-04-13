@@ -4,6 +4,7 @@
 #include "KamataEngine.h"
 #include "AABB.h"
 class Player;
+class GameScene;
 
 
 using namespace KamataEngine;
@@ -23,6 +24,7 @@ private:
 	KamataEngine::WorldTransform worldTransform_;
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::Camera* camera_ = nullptr;
+	GameScene* gameScene_ = nullptr;
 
 	//当たり判定
 	static inline const float kWidth = 0.8f;
@@ -54,7 +56,7 @@ private:
 	void BehaviorDeathUpdate();
 
 public:
-	void Initialize(Model* model, Camera* camera, const NemotoLibrary::SelfVec3& position);
+	void Initialize(Model* model, Camera* camera,GameScene* gameScene ,const NemotoLibrary::SelfVec3& position);
 	void Update();
 	void UpdateMatrix();
 	void Draw();

@@ -1,6 +1,7 @@
 ﻿#include "Enemy.h"
 #define NOMINMAX
 #include "Player.h"
+#include "GameScene.h"
 #include "WorldTransform.h"
 #include "easing.h"
 #include "mathTypes.h"
@@ -14,7 +15,7 @@ using namespace NemotoLibrary;
 
 ///=============初期化処理=============
 
-void Enemy::Initialize(Model* model, Camera* camera, const SelfVec3& position) {
+void Enemy::Initialize(Model* model, Camera* camera, GameScene* gameScene, const SelfVec3& position) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
@@ -24,6 +25,8 @@ void Enemy::Initialize(Model* model, Camera* camera, const SelfVec3& position) {
 
 	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
 	camera_ = camera;
+
+	gameScene_ = gameScene;
 
 	walkTimer_ = 0.0f;
 }
@@ -105,6 +108,9 @@ void Enemy::OnCollision(const Player* player) {
 
 	if (player->IsAttack()) {
 		behaviorRequest_ = Behavior::kDeath;
+
+		SelfVec3 effectPos = ((ToMyEngine(worldTransform_.translation_) + player->GetWorldPosition()) / 2.0f);
+		gameScene_->CreateHitEffect(effectPos);
 	}
 }
 

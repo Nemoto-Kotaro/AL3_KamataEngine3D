@@ -76,6 +76,15 @@
     <Filter Include="ソース ファイル\Scene\Fade">
       <UniqueIdentifier>{ee4cb295-2108-4871-a323-a068a1127008}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Effect\HitEffect">
+      <UniqueIdentifier>{0943c0ac-7895-43c7-ad4c-0d844e1eaaa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Enemy\DeathParticles">
+      <UniqueIdentifier>{990e41d8-b1f7-4066-bdb5-8de2dcb998f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Function\Random">
+      <UniqueIdentifier>{796804f4-ff4b-487d-b9f3-94ea7e6be73f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -105,9 +114,6 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>ソース ファイル\Character\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="DeathParticles.cpp">
-      <Filter>ソース ファイル\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="SelfMatrix.cpp">
       <Filter>ソース ファイル\NemotoLibrary\Matrix</Filter>
     </ClCompile>
@@ -125,6 +131,15 @@
     </ClCompile>
     <ClCompile Include="Fade.cpp">
       <Filter>ソース ファイル\Scene\Fade</Filter>
+    </ClCompile>
+    <ClCompile Include="HitEffect.cpp">
+      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="DeathParticles.cpp">
+      <Filter>ソース ファイル\Character\Enemy\DeathParticles</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>ソース ファイル\Function\Random</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -204,9 +219,6 @@
     <ClInclude Include="Character.h">
       <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
-    <ClInclude Include="DeathParticles.h">
-      <Filter>ソース ファイル\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="SelfMatrix.h">
       <Filter>ソース ファイル\NemotoLibrary\Matrix</Filter>
     </ClInclude>
@@ -224,6 +236,15 @@
     </ClInclude>
     <ClInclude Include="Fade.h">
       <Filter>ソース ファイル\Scene\Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="HitEffect.h">
+      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="DeathParticles.h">
+      <Filter>ソース ファイル\Character\Enemy\DeathParticles</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>ソース ファイル\Function\Random</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

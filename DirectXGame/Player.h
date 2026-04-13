@@ -132,7 +132,7 @@ public:
 	void OnCollision(const Enemy* enemy);
 
 	// ゲッタセッタ系
-	NemotoLibrary::SelfVec3 GetWorldPosition();
+	NemotoLibrary::SelfVec3 GetWorldPosition() const;
 	NemotoLibrary::AABB GetAABB();
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
