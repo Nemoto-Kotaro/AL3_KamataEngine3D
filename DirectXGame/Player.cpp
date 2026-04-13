@@ -437,7 +437,7 @@ SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3& center, Corner co
 
 ///=============取得関数=============
 
-SelfVec3 Player::GetWorldPosition() {
+SelfVec3 Player::GetWorldPosition() const {
 	Vector3 worldPos;
 	worldPos.x = worldTransform_.translation_.x;
 	worldPos.y = worldTransform_.translation_.y;
