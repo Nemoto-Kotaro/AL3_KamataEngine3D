@@ -250,13 +250,15 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 	    {kLeftTop,    kLeftBottom },
 	};
 
-	static constexpr int Next[static_cast<int>(RectSide::kDirCount)][2] = {
-	    {0,  1 },
-	    {0,  -1},
-	    {-1, 0 },
-	    {1,  0 },
+	//mapChipTypeNext判定で使う
+	static constexpr int DirectionOffset[static_cast<int>(RectSide::kDirCount)][2] = {
+	    {0,  1 },//上
+	    {0,  -1},//下
+	    {-1, 0 },//左
+	    {1,  0 },//右
 	};
 
+	//移動後を中心にして頂点を取得
 	std::array<SelfVec3, kNumCorner> positionNew;
 	for (uint32_t i = 0; i < positionNew.size(); i++) {
 		positionNew[i] = CornerPosition(info.MoveOffset + worldTransform_.translation_, static_cast<Corner>(i));
@@ -268,8 +270,10 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 
 	for (int i = 0; i < 2; i++) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[corner[dirNum][i]]);
+		// 現在のチップと、進行方向1つ隣のチップを取得
 		mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
-		mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex + Next[dirNum][0], indexSet.yIndex + Next[dirNum][1]);
+		mapChipTypeNext = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex + DirectionOffset[dirNum][0], indexSet.yIndex + DirectionOffset[dirNum][1]);
+		//連続したブロックを認識して処理
 		if (mapChipType == MapChipType::kBlock && mapChipTypeNext != MapChipType::kBlock) {
 			hit = true;
 		}
@@ -282,9 +286,10 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 		uint32_t cmpIndexSet[2] = {indexSet.xIndex, indexSet.yIndex};
 		uint32_t cmpIndexSetShow[2] = {indexSetShow.xIndex, indexSetShow.yIndex};
 
-		// 横移動ならx比較、縦移動ならy比較、nextを再利用してるので分かりずらい
+		// 移動方向に応じて比較する軸を切り替える
+		// 横移動ならx比較、縦移動ならy比較、DirectionOffsetを再利用してるので分かりずらい
 		// abs(Next[dirNum][1]) : 0=x軸, 1=y軸
-		if (cmpIndexSet[abs(Next[dirNum][1])] != cmpIndexSetShow[abs(Next[dirNum][1])]) {
+		if (cmpIndexSet[abs(DirectionOffset[dirNum][1])] != cmpIndexSetShow[abs(DirectionOffset[dirNum][1])]) {
 			return true;
 		}
 	}
