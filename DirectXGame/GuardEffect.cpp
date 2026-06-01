@@ -1,4 +1,4 @@
-#include "HitEffect.h"
+#include "GuardEffect.h"
 #include "Random.h"
 #include "WorldTransform.h"
 #include "easing.h"
@@ -6,12 +6,12 @@
 #include <cassert>
 #include <numbers>
 
-KamataEngine::Model* HitEffect::model_ = nullptr;
+KamataEngine::Model* GuardEffect::model_ = nullptr;
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
 
-void HitEffect::Initialize(SelfVec3& position) {
+void GuardEffect::Initialize(SelfVec3& position) {
 	circleWorldTransform_.translation_ = ToKamataEngine(position);
 	circleWorldTransform_.Initialize();
 
@@ -27,7 +27,7 @@ void HitEffect::Initialize(SelfVec3& position) {
 	color_ = {1.0f, 1.0f, 1.0f, 1.0f};
 }
 
-void HitEffect::Update() {
+void GuardEffect::Update() {
 	counter_ += 1.0f / 60.0f;
 
 	switch (state_) {
@@ -67,22 +67,22 @@ void HitEffect::Update() {
 	}
 }
 
-void HitEffect::UpdateMatrix() {
+void GuardEffect::UpdateMatrix() {
 	WorldTransformUpdate(circleWorldTransform_);
 	for (WorldTransform& worldTransform : ellipseWorldTransforms_) {
 		WorldTransformUpdate(worldTransform);
 	}
 }
 
-void HitEffect::Draw() {
+void GuardEffect::Draw() {
 	model_->Draw(circleWorldTransform_, *camera_, &objectColor_);
 	for (WorldTransform& worldTransform : ellipseWorldTransforms_) {
 		model_->Draw(worldTransform, *camera_, &objectColor_);
 	}
 }
 
-HitEffect* HitEffect::Create(SelfVec3& position) {
-	HitEffect* instance = new HitEffect();
+GuardEffect* GuardEffect::Create(SelfVec3& position) {
+	GuardEffect* instance = new GuardEffect();
 	assert(instance);
 	instance->Initialize(position);
 	return instance;

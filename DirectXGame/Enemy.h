@@ -1,12 +1,11 @@
 ﻿#pragma once
-#include "Character.h"
-#include "SelfVector.h"
-#include "KamataEngine.h"
-#include "BaseEnemy.h"
 #include "AABB.h"
+#include "BaseEnemy.h"
+#include "Character.h"
+#include "KamataEngine.h"
+#include "SelfVector.h"
 class Player;
 class GameScene;
-
 
 using namespace KamataEngine;
 
@@ -16,7 +15,6 @@ private:
 	// 振るまい
 	Behavior behavior_ = Behavior::kRoot;
 	Behavior behaviorRequest_ = Behavior::kUnknown;
-
 
 private:
 	// 当たり判定
@@ -39,11 +37,11 @@ private:
 
 	LRDirection lrDirection_ = LRDirection::kLeft;
 
-	void BehaviorRootInitialize() override;
-	void BehaviorRootUpdate() override;
+	void BehaviorRootInitialize();
+	void BehaviorRootUpdate();
 
-	void BehaviorDeathInitialize() override;
-	void BehaviorDeathUpdate() override;
+	void BehaviorDeathInitialize();
+	void BehaviorDeathUpdate();
 
 public:
 	void Initialize(Model* model, Camera* camera, GameScene* gameScene, const NemotoLibrary::SelfVec3& position) override;

@@ -76,9 +76,6 @@
     <Filter Include="ソース ファイル\Scene\Fade">
       <UniqueIdentifier>{ee4cb295-2108-4871-a323-a068a1127008}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Effect\HitEffect">
-      <UniqueIdentifier>{0943c0ac-7895-43c7-ad4c-0d844e1eaaa3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Character\Enemy\DeathParticles">
       <UniqueIdentifier>{990e41d8-b1f7-4066-bdb5-8de2dcb998f6}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,15 @@
     </Filter>
     <Filter Include="ソース ファイル\Character\Enemy\BaseEnemy">
       <UniqueIdentifier>{2f52ccf5-5db5-4017-9fdd-cbd40eaab761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\Effect">
+      <UniqueIdentifier>{0943c0ac-7895-43c7-ad4c-0d844e1eaaa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\HitEffect">
+      <UniqueIdentifier>{5b6f951b-12a3-4a98-94d5-0b288cf8e58a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\GuardEffect">
+      <UniqueIdentifier>{f9bc7136-2b7f-4c56-8f9f-54d0d8b184d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -138,8 +144,8 @@
     <ClCompile Include="Fade.cpp">
       <Filter>ソース ファイル\Scene\Fade</Filter>
     </ClCompile>
-    <ClCompile Include="HitEffect.cpp">
-      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    <ClCompile Include="Effect.cpp">
+      <Filter>ソース ファイル\Effect\Effect</Filter>
     </ClCompile>
     <ClCompile Include="DeathParticles.cpp">
       <Filter>ソース ファイル\Character\Enemy\DeathParticles</Filter>
@@ -155,6 +161,12 @@
     </ClCompile>
     <ClCompile Include="BaseEnemy.cpp">
       <Filter>ソース ファイル\Character\Enemy\BaseEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="HitEffect.cpp">
+      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="GuardEffect.cpp">
+      <Filter>ソース ファイル\Effect\GuardEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -249,8 +261,8 @@
     <ClInclude Include="Fade.h">
       <Filter>ソース ファイル\Scene\Fade</Filter>
     </ClInclude>
-    <ClInclude Include="HitEffect.h">
-      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    <ClInclude Include="Effect.h">
+      <Filter>ソース ファイル\Effect\Effect</Filter>
     </ClInclude>
     <ClInclude Include="DeathParticles.h">
       <Filter>ソース ファイル\Character\Enemy\DeathParticles</Filter>
@@ -266,6 +278,12 @@
     </ClInclude>
     <ClInclude Include="BaseEnemy.h">
       <Filter>ソース ファイル\Character\Enemy\BaseEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="HitEffect.h">
+      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="GuardEffect.h">
+      <Filter>ソース ファイル\Effect\GuardEffect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

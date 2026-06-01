@@ -1,9 +1,9 @@
 #pragma once
 #include "Effect.h"
-class HitEffect : public Effect {
+
+class GuardEffect : public Effect {
 private:
 	static KamataEngine::Model* model_;
-
 
 	enum class State { kSpread, kFadeOut, kFinished };
 	State state_ = State::kSpread;
@@ -21,11 +21,11 @@ private:
 	NemotoLibrary::SelfVec4 color_;
 
 public:
-	//スタティックなので各々
-	static HitEffect* Create(NemotoLibrary::SelfVec3& position);
+	// スタティックなので各々
+	static GuardEffect* Create(NemotoLibrary::SelfVec3& position);
 	static void SetModel(KamataEngine::Model* model) { model_ = model; };
 
-	//こっちはオーバーロード
+	// こっちはオーバーロード
 	void Initialize(NemotoLibrary::SelfVec3& position) override;
 	void Update() override;
 	void UpdateMatrix() override;

@@ -1,6 +1,8 @@
 #include "GameScene.h"
 #include "SelfMatrix.h"
 #include "ShieldEnemy.h"
+#include "HitEffect.h"
+#include "GuardEffect.h"
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
@@ -17,19 +19,16 @@ GameScene::~GameScene() {
 
 	//=====エネミー=====
 	delete enemyModel_;
+	delete shieldEnemyModel_;
 	for (BaseEnemy* enemies : enemies_) {
 		delete enemies;
 	}
 
-	////=====シールドエネミー=====
-	// delete enemyModel_;
-	// for (BaseEnemy* enemies : enemies_) {
-	//	delete enemies;
-	// }
 
 	//=====エフェクト=====
 	delete hitEffectModel_;
-	for (HitEffect* hitEffects : hitEffects_) {
+	delete guardEffectModel_;
+	for (Effect* hitEffects : hitEffects_) {
 		delete hitEffects;
 	}
 
@@ -105,8 +104,10 @@ void GameScene::Initialize() {
 
 	//=====エフェクト=====
 	hitEffectModel_ = Model::CreateFromOBJ("hitEffect", true);
+	guardEffectModel_ = Model::CreateFromOBJ("hitEffect", true);
 	HitEffect::SetModel(hitEffectModel_);
-	HitEffect::SetCamera(&camera_);
+	GuardEffect::SetModel(guardEffectModel_);
+	Effect::SetCamera(&camera_);
 
 	//=====パーティクル=====
 	particleModel_ = Model::CreateFromOBJ("Particle", true);
@@ -180,7 +181,7 @@ void GameScene::UpdateMatrix() {
 	}
 
 	// エフェクト
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->UpdateMatrix();
 		}
@@ -230,7 +231,7 @@ void GameScene::GamePlayPhaseUpdate() {
 
 	// エフェクト
 
-	hitEffects_.remove_if([](HitEffect* hitEffect) {
+	hitEffects_.remove_if([](Effect* hitEffect) {
 		if (hitEffect->IsDead()) {
 			delete hitEffect;
 			return true;
@@ -239,7 +240,7 @@ void GameScene::GamePlayPhaseUpdate() {
 		return false;
 	});
 
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->Update();
 		}
@@ -263,7 +264,7 @@ void GameScene::DeathPhaseUpdate() {
 		}
 	}
 
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->Update();
 		}
@@ -299,7 +300,7 @@ void GameScene::Draw() {
 		}
 	}
 
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->Draw();
 		}
@@ -407,6 +408,11 @@ void GameScene::ChangePhase() {
 }
 
 void GameScene::CreateHitEffect(NemotoLibrary::SelfVec3& position) {
-	HitEffect* newHitEffect = HitEffect::Create(position);
+	Effect* newHitEffect = HitEffect::Create(position);
+	hitEffects_.push_back(newHitEffect);
+}
+
+void GameScene::CreateGuardEffect(NemotoLibrary::SelfVec3& position) {
+	Effect* newHitEffect = GuardEffect::Create(position);
 	hitEffects_.push_back(newHitEffect);
 }

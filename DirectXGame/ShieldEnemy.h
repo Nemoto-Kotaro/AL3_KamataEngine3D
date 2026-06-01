@@ -11,7 +11,7 @@ using namespace KamataEngine;
 
 class ShieldEnemy : public BaseEnemy {
 private:
-	enum class Behavior { kRoot, kDeath, kUnknown };
+	enum class Behavior { kRoot, kDeath, kGuard, kUnknown };
 	// 振るまい
 	Behavior behavior_ = Behavior::kRoot;
 	Behavior behaviorRequest_ = Behavior::kUnknown;
@@ -36,14 +36,21 @@ private:
 	static inline const float kWalkMotionAngleEnd = 90.0f;
 	static inline const float kWalkMotionTime = 1.0f;
 
-	
+	//ガード
+	float guardCounter_ = 0.0f;
+	static inline const float guardDuration_ = 0.35f;
+
+
 	LRDirection lrDirection_ = LRDirection::kLeft;
 
-	void BehaviorRootInitialize() override;
-	void BehaviorRootUpdate() override;
+	void BehaviorRootInitialize();
+	void BehaviorRootUpdate();
 
-	void BehaviorDeathInitialize() override;
-	void BehaviorDeathUpdate() override;
+	void BehaviorDeathInitialize();
+	void BehaviorDeathUpdate();
+
+	void BehaviorGuardInitialize();
+	void BehaviorGuardUpdate();
 
 public:
 	void Initialize(Model* model, Camera* camera, GameScene* gameScene, const NemotoLibrary::SelfVec3& position) override;

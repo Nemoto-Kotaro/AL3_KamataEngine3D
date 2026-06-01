@@ -21,11 +21,6 @@ public:
 
 	bool isCollisionDisabled_ = false;
 
-	virtual void BehaviorRootInitialize() = 0;
-	virtual void BehaviorRootUpdate() = 0;
-
-	virtual void BehaviorDeathInitialize() = 0;
-	virtual void BehaviorDeathUpdate() = 0;
 	virtual NemotoLibrary::SelfVec2 GetSize() = 0;
 
 public:

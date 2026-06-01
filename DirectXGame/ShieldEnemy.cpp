@@ -30,17 +30,18 @@ void ShieldEnemy::Initialize(Model* model, Camera* camera, GameScene* gameScene,
 	walkTimer_ = 0.0f;
 }
 
-
-
 void ShieldEnemy::Update() {
 	if (behaviorRequest_ != Behavior::kUnknown) {
 		behavior_ = behaviorRequest_;
 		switch (behavior_) {
-		case ShieldEnemy::Behavior::kRoot:
+		case Behavior::kRoot:
 			BehaviorRootInitialize();
 			break;
-		case ShieldEnemy::Behavior::kDeath:
+		case Behavior::kDeath:
 			BehaviorDeathInitialize();
+			break;
+		case Behavior::kGuard:
+			BehaviorGuardInitialize();
 			break;
 		default:
 			break;
@@ -50,11 +51,14 @@ void ShieldEnemy::Update() {
 	}
 
 	switch (behavior_) {
-	case ShieldEnemy::Behavior::kRoot:
+	case Behavior::kRoot:
 		BehaviorRootUpdate();
 		break;
-	case ShieldEnemy::Behavior::kDeath:
+	case Behavior::kDeath:
 		BehaviorDeathUpdate();
+		break;
+	case Behavior::kGuard:
+		BehaviorGuardUpdate();
 		break;
 	default:
 		break;
@@ -92,6 +96,18 @@ void ShieldEnemy::BehaviorDeathUpdate() {
 	}
 }
 
+void ShieldEnemy::BehaviorGuardInitialize() { guardCounter_ = 0.0f; }
+
+void ShieldEnemy::BehaviorGuardUpdate() {
+	guardCounter_ += 1.0f / 60.0f;
+	float t = guardCounter_ / guardDuration_;
+	float param = std::sin(t * std::numbers::pi_v<float>);
+	worldTransform_.rotation_.x = param * DegTheta(60.0f);
+	if (guardCounter_ >= guardDuration_) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
+}
+
 ///=============更新処理の関数=============
 
 void ShieldEnemy::OnCollision(Player* player) {
@@ -100,12 +116,12 @@ void ShieldEnemy::OnCollision(Player* player) {
 	}
 
 	if (player->IsAttack()) {
-		//左右向かい合う(向いている向きが違う)ならガード
+		// 左右向かい合う(向いている向きが違う)ならガード
 		if (player->GetLRDirection() != lrDirection_) {
 			player->RequestKnockback();
+			behaviorRequest_ = Behavior::kGuard;
 			return;
 		}
-
 
 		behaviorRequest_ = Behavior::kDeath;
 

@@ -417,8 +417,6 @@ void Player::IsHitCeiling(const CollisionMapInfo& info) {
 
 void Player::IsHitGround(const CollisionMapInfo& info) {
 
-	DebugText::GetInstance()->ConsolePrintf("hit ground\n");
-
 	if (onGround_) {
 		if (velocity_.y > 0.0f) {
 			onGround_ = false;
