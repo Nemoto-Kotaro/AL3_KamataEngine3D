@@ -9,7 +9,7 @@
 #include "CameraController.h"
 #include "DeathParticles.h"
 #include "Fade.h"
-#include "HitEffect.h"
+#include "Effect.h"
 
 class GameScene {
 private:
@@ -44,11 +44,15 @@ private:
 
 	//エネミー
 	KamataEngine::Model* enemyModel_ = nullptr;
-	std::list<Enemy*> enemies_;
+	KamataEngine::Model* shieldEnemyModel_ = nullptr;
+	std::list<BaseEnemy*> enemies_;
+
+	
 
 	//エフェクト
 	KamataEngine::Model* hitEffectModel_ = nullptr;
-	std::list<HitEffect*> hitEffects_;
+	KamataEngine::Model* guardEffectModel_ = nullptr;
+	std::list<Effect*> hitEffects_;
 
 
 	//ブロック
@@ -89,6 +93,7 @@ public:
 
 	// エフェクトの生成
 	void CreateHitEffect(NemotoLibrary::SelfVec3& position);
+	void CreateGuardEffect(NemotoLibrary::SelfVec3& position);
 
 	//ゲッターセッター
 	bool IsFinished() const { return finished_; };

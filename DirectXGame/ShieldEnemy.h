@@ -9,9 +9,9 @@ class GameScene;
 
 using namespace KamataEngine;
 
-class Enemy : public BaseEnemy {
+class ShieldEnemy : public BaseEnemy {
 private:
-	enum class Behavior { kRoot, kDeath, kUnknown };
+	enum class Behavior { kRoot, kDeath, kGuard, kUnknown };
 	// 振るまい
 	Behavior behavior_ = Behavior::kRoot;
 	Behavior behaviorRequest_ = Behavior::kUnknown;
@@ -20,6 +20,7 @@ private:
 	// 当たり判定
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
+	bool isCollisionDisabled_ = false;
 
 	// 移動
 	static inline const float kWalkSpeed = 0.02f;
@@ -31,9 +32,14 @@ private:
 	float deathCounter_ = 0.0f;
 	static inline const float deathDuration_ = 1.0f;
 
-	static inline const float kWalkMotionAngleStart = 0.0f;
-	static inline const float kWalkMotionAngleEnd = 20.0f;
+	static inline const float kWalkMotionAngleStart = 45.0f;
+	static inline const float kWalkMotionAngleEnd = 90.0f;
 	static inline const float kWalkMotionTime = 1.0f;
+
+	//ガード
+	float guardCounter_ = 0.0f;
+	static inline const float guardDuration_ = 0.35f;
+
 
 	LRDirection lrDirection_ = LRDirection::kLeft;
 
@@ -43,11 +49,12 @@ private:
 	void BehaviorDeathInitialize();
 	void BehaviorDeathUpdate();
 
+	void BehaviorGuardInitialize();
+	void BehaviorGuardUpdate();
+
 public:
 	void Initialize(Model* model, Camera* camera, GameScene* gameScene, const NemotoLibrary::SelfVec3& position) override;
-
 	void Update() override;
-
 	void OnCollision(Player* player) override;
 
 	NemotoLibrary::SelfVec2 GetSize() { return NemotoLibrary::SelfVec2(kWidth, kHeight); };

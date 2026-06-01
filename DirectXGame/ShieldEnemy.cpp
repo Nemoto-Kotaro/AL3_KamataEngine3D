@@ -1,7 +1,7 @@
-﻿#include "Enemy.h"
+﻿#include "ShieldEnemy.h"
 #define NOMINMAX
-#include "Player.h"
 #include "GameScene.h"
+#include "Player.h"
 #include "WorldTransform.h"
 #include "easing.h"
 #include "mathTypes.h"
@@ -14,12 +14,12 @@ using namespace KamataEngine;
 using namespace NemotoLibrary;
 
 ///=============初期化処理=============
-void Enemy::Initialize(Model* model, Camera* camera, GameScene* gameScene, const SelfVec3& position) {
+void ShieldEnemy::Initialize(Model* model, Camera* camera, GameScene* gameScene, const SelfVec3& position) {
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = ToKamataEngine(position);
-	worldTransform_.rotation_.y = std::numbers::pi_v<float> * -1.5f;
+	worldTransform_.rotation_.y = DegTheta(kWalkMotionAngleStart);
 	WorldTransformUpdate(worldTransform_);
 
 	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
@@ -30,16 +30,18 @@ void Enemy::Initialize(Model* model, Camera* camera, GameScene* gameScene, const
 	walkTimer_ = 0.0f;
 }
 
-
-void Enemy::Update() {
+void ShieldEnemy::Update() {
 	if (behaviorRequest_ != Behavior::kUnknown) {
 		behavior_ = behaviorRequest_;
 		switch (behavior_) {
-		case Enemy::Behavior::kRoot:
+		case Behavior::kRoot:
 			BehaviorRootInitialize();
 			break;
-		case Enemy::Behavior::kDeath:
+		case Behavior::kDeath:
 			BehaviorDeathInitialize();
+			break;
+		case Behavior::kGuard:
+			BehaviorGuardInitialize();
 			break;
 		default:
 			break;
@@ -49,11 +51,14 @@ void Enemy::Update() {
 	}
 
 	switch (behavior_) {
-	case Enemy::Behavior::kRoot:
+	case Behavior::kRoot:
 		BehaviorRootUpdate();
 		break;
-	case Enemy::Behavior::kDeath:
+	case Behavior::kDeath:
 		BehaviorDeathUpdate();
+		break;
+	case Behavior::kGuard:
+		BehaviorGuardUpdate();
 		break;
 	default:
 		break;
@@ -62,25 +67,25 @@ void Enemy::Update() {
 
 //===========各ビヘイビア===========
 
-void Enemy::BehaviorRootInitialize() { isCollisionDisabled_ = false; }
+void ShieldEnemy::BehaviorRootInitialize() { isCollisionDisabled_ = false; }
 
-void Enemy::BehaviorRootUpdate() {
+void ShieldEnemy::BehaviorRootUpdate() {
 	worldTransform_.translation_ = ToKamataEngine(velocity_ + worldTransform_.translation_);
 
 	// 歩きアニメーション
 	walkTimer_ += 1.0f / 60.0f;
 
-	float param = std::sin(walkTimer_);
+	float param = std::cos(walkTimer_);
 	float degree = kWalkMotionAngleStart + kWalkMotionAngleEnd * (param + 1.0f) / 2.0f;
-	worldTransform_.rotation_.x = DegTheta(degree);
+	worldTransform_.rotation_.y = DegTheta(degree);
 }
 
-void Enemy::BehaviorDeathInitialize() {
+void ShieldEnemy::BehaviorDeathInitialize() {
 	deathCounter_ = 0.0f;
 	isCollisionDisabled_ = true;
 }
 
-void Enemy::BehaviorDeathUpdate() {
+void ShieldEnemy::BehaviorDeathUpdate() {
 	deathCounter_ += 1.0f / 60.0f;
 	float t = deathCounter_ / deathDuration_;
 	worldTransform_.rotation_.x = Lerp(0.0f, std::numbers::pi_v<float> * 0.5f, Ease::InSine(t));
@@ -91,14 +96,35 @@ void Enemy::BehaviorDeathUpdate() {
 	}
 }
 
+void ShieldEnemy::BehaviorGuardInitialize() { guardCounter_ = 0.0f; }
+
+void ShieldEnemy::BehaviorGuardUpdate() {
+	guardCounter_ += 1.0f / 60.0f;
+	float t = guardCounter_ / guardDuration_;
+	float param = std::sin(t * std::numbers::pi_v<float>);
+	worldTransform_.rotation_.x = param * DegTheta(60.0f);
+	if (guardCounter_ >= guardDuration_) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
+}
+
 ///=============更新処理の関数=============
 
-void Enemy::OnCollision(Player* player) {
+void ShieldEnemy::OnCollision(Player* player) {
 	if (behavior_ == Behavior::kDeath) {
 		return;
 	}
 
 	if (player->IsAttack()) {
+		// 左右向かい合う(向いている向きが違う)ならガード
+		if (player->GetLRDirection() != lrDirection_) {
+			player->RequestKnockback();
+			SelfVec3 effectPos = ((ToMyEngine(worldTransform_.translation_) + player->GetWorldPosition()) / 2.0f);
+			gameScene_->CreateGuardEffect(effectPos);
+			behaviorRequest_ = Behavior::kGuard;
+			return;
+		}
+
 		behaviorRequest_ = Behavior::kDeath;
 
 		SelfVec3 effectPos = ((ToMyEngine(worldTransform_.translation_) + player->GetWorldPosition()) / 2.0f);

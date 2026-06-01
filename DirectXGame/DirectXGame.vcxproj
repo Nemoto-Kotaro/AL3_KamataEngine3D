@@ -155,12 +155,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="BaseEnemy.cpp" />
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="DeathParticles.cpp" />
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="GuardEffect.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapChipField.cpp" />
@@ -169,6 +172,7 @@
     <ClCompile Include="SelfMatrix.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SelfVector.cpp" />
+    <ClCompile Include="ShieldEnemy.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
@@ -272,6 +276,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="BaseEnemy.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="DeathParticles.h" />
@@ -279,6 +284,8 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="GuardEffect.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="MapChipField.h" />
     <ClInclude Include="mathTypes.h" />
@@ -286,6 +293,7 @@
     <ClInclude Include="SelfMatrix.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SelfVector.h" />
+    <ClInclude Include="ShieldEnemy.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="WorldTransform.h" />

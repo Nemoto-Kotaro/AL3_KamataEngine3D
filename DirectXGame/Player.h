@@ -3,7 +3,7 @@
 #include "Character.h"
 #include "KamataEngine.h"
 #include "SelfVector.h"
-class Enemy;
+class BaseEnemy;
 
 // 前方宣言
 class MapChipField;
@@ -38,9 +38,10 @@ public:
 		kDirCount
 	};
 
-	enum class Behavior { kRoot, kAttack, kUnknown };
+	enum class Behavior { kRoot, kAttack, kUnknown, kKnockback };
 
 	enum class AttackPhase { kCharge, kDash, kRecovery };
+	enum class KnockbackPhase { kKnockback, kDown };
 
 private:
 	KamataEngine::Model* model_ = nullptr;
@@ -67,6 +68,7 @@ private:
 	static inline const float kAttenuation = 0.07f;
 	static inline const float kLimitRunSpeed = 0.3f;
 	NemotoLibrary::SelfVec3 velocity_ = {};
+	NemotoLibrary::SelfVec3 lerpStrat_ = {};
 
 	// 回転
 	LRDirection lrDirection_ = LRDirection::kRight;
@@ -89,16 +91,27 @@ private:
 	AttackPhase attackPhase_;
 	float attackCounter_ = 0.0f;
 
-	//攻撃の動作時間
+	// 攻撃の動作時間
 	static inline const float attackChargeDuration = 0.02f;
 	static inline const float attackDashDuration = 0.3f;
 	static inline const float attackRecoveryDuration = 0.04f;
 
-	//攻撃エフェクト
+	//ノックバック
+	bool isRequestKnockback_ = false;
+
+	KnockbackPhase knockbackPhase_;
+	float knockbackCounter_ = 0.0f;
+
+	// ノックバックの動作時間
+	static inline const float knockbackDuration = 0.1f;
+	static inline const float knockbackDownDuration = 0.05f;
+
+	//吹き飛ぶ勢い
+	static inline const float knockbackPower = -0.45f;
+
+	// 攻撃エフェクト
 	KamataEngine::Model* modelAttack_ = nullptr;
 	KamataEngine::WorldTransform worldTransformAttack_;
-
-
 
 	NemotoLibrary::SelfVec3 kAttackVelocity = {0.35f, 0.0f, 0.0f};
 
@@ -109,6 +122,9 @@ private:
 
 	void BehaviorAttackInitialize();
 	void BehaviorAttackUpdate();
+	
+	void BehaviorKnockbackInitialize();
+	void BehaviorKnockbackUpdate();
 
 	void MoveInPut();
 	void MapCollision(CollisionMapInfo& info);
@@ -129,15 +145,20 @@ public:
 	void UpdateMatrix();
 	void Draw();
 
-	void OnCollision(const Enemy* enemy);
+	void OnCollision(const BaseEnemy* enemy);
 
 	// ゲッタセッタ系
 	NemotoLibrary::SelfVec3 GetWorldPosition() const;
 	NemotoLibrary::AABB GetAABB();
+
+	LRDirection GetLRDirection() const { return lrDirection_; };
 
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
 	KamataEngine::WorldTransform& GetWorldTransform() { return worldTransform_; };
 	const NemotoLibrary::SelfVec3& GetVelocity() const { return velocity_; };
 	bool IsDead() const { return isDead_; };
 	bool IsAttack() const;
+	bool IsKnockback() const;
+
+	void RequestKnockback() { isRequestKnockback_ = true; };
 };

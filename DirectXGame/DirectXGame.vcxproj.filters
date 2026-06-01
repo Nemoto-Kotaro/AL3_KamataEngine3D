@@ -76,14 +76,29 @@
     <Filter Include="ソース ファイル\Scene\Fade">
       <UniqueIdentifier>{ee4cb295-2108-4871-a323-a068a1127008}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Effect\HitEffect">
-      <UniqueIdentifier>{0943c0ac-7895-43c7-ad4c-0d844e1eaaa3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Character\Enemy\DeathParticles">
       <UniqueIdentifier>{990e41d8-b1f7-4066-bdb5-8de2dcb998f6}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Function\Random">
       <UniqueIdentifier>{796804f4-ff4b-487d-b9f3-94ea7e6be73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Enemy\NormalEnemy">
+      <UniqueIdentifier>{a2738f57-e19d-47b3-83a6-57f6ca90c047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Enemy\ShieldEnemy">
+      <UniqueIdentifier>{35fc3fba-ca15-4177-9dc9-35593ba10cea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Enemy\BaseEnemy">
+      <UniqueIdentifier>{2f52ccf5-5db5-4017-9fdd-cbd40eaab761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\Effect">
+      <UniqueIdentifier>{0943c0ac-7895-43c7-ad4c-0d844e1eaaa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\HitEffect">
+      <UniqueIdentifier>{5b6f951b-12a3-4a98-94d5-0b288cf8e58a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Effect\GuardEffect">
+      <UniqueIdentifier>{f9bc7136-2b7f-4c56-8f9f-54d0d8b184d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +126,6 @@
     <ClCompile Include="CameraController.cpp">
       <Filter>ソース ファイル\World\CameraController</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>ソース ファイル\Character\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="SelfMatrix.cpp">
       <Filter>ソース ファイル\NemotoLibrary\Matrix</Filter>
     </ClCompile>
@@ -132,14 +144,29 @@
     <ClCompile Include="Fade.cpp">
       <Filter>ソース ファイル\Scene\Fade</Filter>
     </ClCompile>
-    <ClCompile Include="HitEffect.cpp">
-      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    <ClCompile Include="Effect.cpp">
+      <Filter>ソース ファイル\Effect\Effect</Filter>
     </ClCompile>
     <ClCompile Include="DeathParticles.cpp">
       <Filter>ソース ファイル\Character\Enemy\DeathParticles</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>ソース ファイル\Function\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース ファイル\Character\Enemy\NormalEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="ShieldEnemy.cpp">
+      <Filter>ソース ファイル\Character\Enemy\ShieldEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEnemy.cpp">
+      <Filter>ソース ファイル\Character\Enemy\BaseEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="HitEffect.cpp">
+      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="GuardEffect.cpp">
+      <Filter>ソース ファイル\Effect\GuardEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,9 +240,6 @@
     <ClInclude Include="CameraController.h">
       <Filter>ソース ファイル\World\CameraController</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>ソース ファイル\Character\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
@@ -237,14 +261,29 @@
     <ClInclude Include="Fade.h">
       <Filter>ソース ファイル\Scene\Fade</Filter>
     </ClInclude>
-    <ClInclude Include="HitEffect.h">
-      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    <ClInclude Include="Effect.h">
+      <Filter>ソース ファイル\Effect\Effect</Filter>
     </ClInclude>
     <ClInclude Include="DeathParticles.h">
       <Filter>ソース ファイル\Character\Enemy\DeathParticles</Filter>
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>ソース ファイル\Function\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ソース ファイル\Character\Enemy\NormalEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="ShieldEnemy.h">
+      <Filter>ソース ファイル\Character\Enemy\ShieldEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEnemy.h">
+      <Filter>ソース ファイル\Character\Enemy\BaseEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="HitEffect.h">
+      <Filter>ソース ファイル\Effect\HitEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="GuardEffect.h">
+      <Filter>ソース ファイル\Effect\GuardEffect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

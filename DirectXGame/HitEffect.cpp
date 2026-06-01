@@ -7,7 +7,6 @@
 #include <numbers>
 
 KamataEngine::Model* HitEffect::model_ = nullptr;
-KamataEngine::Camera* HitEffect::camera_ = nullptr;
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
@@ -32,7 +31,7 @@ void HitEffect::Update() {
 	counter_ += 1.0f / 60.0f;
 
 	switch (state_) {
-	case HitEffect::State::kSpread: {
+	case State::kSpread: {
 
 		float easeT = Ease::InSine(counter_ / spreadDuration_);
 		circleWorldTransform_.scale_.x = Lerp(0.25f, 1.0f, easeT);
@@ -51,7 +50,7 @@ void HitEffect::Update() {
 
 		break;
 	}
-	case HitEffect::State::kFadeOut: {
+	case State::kFadeOut: {
 
 		float easeT = Ease::InSine(counter_ / spreadDuration_);
 		color_.w = std::clamp(Lerp(1.0f, 0.0f, easeT), 0.0f, 1.0f);

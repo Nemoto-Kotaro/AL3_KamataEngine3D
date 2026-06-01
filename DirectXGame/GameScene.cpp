@@ -1,5 +1,8 @@
 #include "GameScene.h"
 #include "SelfMatrix.h"
+#include "ShieldEnemy.h"
+#include "HitEffect.h"
+#include "GuardEffect.h"
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
@@ -16,13 +19,16 @@ GameScene::~GameScene() {
 
 	//=====エネミー=====
 	delete enemyModel_;
-	for (Enemy* enemies : enemies_) {
+	delete shieldEnemyModel_;
+	for (BaseEnemy* enemies : enemies_) {
 		delete enemies;
 	}
 
+
 	//=====エフェクト=====
 	delete hitEffectModel_;
-	for (HitEffect* hitEffects : hitEffects_) {
+	delete guardEffectModel_;
+	for (Effect* hitEffects : hitEffects_) {
 		delete hitEffects;
 	}
 
@@ -82,15 +88,26 @@ void GameScene::Initialize() {
 	for (int i = 0; i < 3; i++) {
 		Enemy* newEnemy = new Enemy();
 		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
-		newEnemy->Initialize(enemyModel_, &camera_, this,enemyPosition);
+		newEnemy->Initialize(enemyModel_, &camera_, this, enemyPosition);
+
+		enemies_.push_back(newEnemy);
+	}
+
+	shieldEnemyModel_ = Model::CreateFromOBJ("ShieldEnemy", true);
+	for (int i = 0; i < 3; i++) {
+		ShieldEnemy* newEnemy = new ShieldEnemy();
+		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + 3 + i, 18);
+		newEnemy->Initialize(shieldEnemyModel_, &camera_, this, enemyPosition);
 
 		enemies_.push_back(newEnemy);
 	}
 
 	//=====エフェクト=====
 	hitEffectModel_ = Model::CreateFromOBJ("hitEffect", true);
+	guardEffectModel_ = Model::CreateFromOBJ("GuardEffect", true);
 	HitEffect::SetModel(hitEffectModel_);
-	HitEffect::SetCamera(&camera_);
+	GuardEffect::SetModel(guardEffectModel_);
+	Effect::SetCamera(&camera_);
 
 	//=====パーティクル=====
 	particleModel_ = Model::CreateFromOBJ("Particle", true);
@@ -157,14 +174,14 @@ void GameScene::UpdateMatrix() {
 	// プレイヤー
 	player_->UpdateMatrix();
 	// 敵
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->UpdateMatrix();
 		}
 	}
 
 	// エフェクト
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->UpdateMatrix();
 		}
@@ -196,7 +213,7 @@ void GameScene::GamePlayPhaseUpdate() {
 	// プレイヤー
 	player_->Update();
 
-	enemies_.remove_if([](Enemy* enemy) {
+	enemies_.remove_if([](BaseEnemy* enemy) {
 		if (enemy->IsDead()) {
 			delete enemy;
 			return true;
@@ -206,7 +223,7 @@ void GameScene::GamePlayPhaseUpdate() {
 	});
 
 	// エネミー
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Update();
 		}
@@ -214,7 +231,7 @@ void GameScene::GamePlayPhaseUpdate() {
 
 	// エフェクト
 
-	hitEffects_.remove_if([](HitEffect* hitEffect) {
+	hitEffects_.remove_if([](Effect* hitEffect) {
 		if (hitEffect->IsDead()) {
 			delete hitEffect;
 			return true;
@@ -223,7 +240,7 @@ void GameScene::GamePlayPhaseUpdate() {
 		return false;
 	});
 
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->Update();
 		}
@@ -241,13 +258,13 @@ void GameScene::DeathPhaseUpdate() {
 	skyDome_->Update();
 
 	// エネミー
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Update();
 		}
 	}
 
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->Update();
 		}
@@ -277,13 +294,13 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// エネミー
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Draw();
 		}
 	}
 
-	for (HitEffect* hitEffects : hitEffects_) {
+	for (Effect* hitEffects : hitEffects_) {
 		if (hitEffects != nullptr) {
 			hitEffects->Draw();
 		}
@@ -342,7 +359,7 @@ void GameScene::CheckAllCollisions() {
 #pragma region playerToEnemy
 	AABB aabb1 = player_->GetAABB();
 	AABB aabb2;
-	for (Enemy* enemy : enemies_) {
+	for (BaseEnemy* enemy : enemies_) {
 		if (enemy->IsCollisionDisabled()) {
 			continue;
 		}
@@ -391,6 +408,11 @@ void GameScene::ChangePhase() {
 }
 
 void GameScene::CreateHitEffect(NemotoLibrary::SelfVec3& position) {
-	HitEffect* newHitEffect = HitEffect::Create(position);
+	Effect* newHitEffect = HitEffect::Create(position);
+	hitEffects_.push_back(newHitEffect);
+}
+
+void GameScene::CreateGuardEffect(NemotoLibrary::SelfVec3& position) {
+	Effect* newHitEffect = GuardEffect::Create(position);
 	hitEffects_.push_back(newHitEffect);
 }
