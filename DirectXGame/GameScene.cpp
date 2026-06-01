@@ -104,7 +104,7 @@ void GameScene::Initialize() {
 
 	//=====エフェクト=====
 	hitEffectModel_ = Model::CreateFromOBJ("hitEffect", true);
-	guardEffectModel_ = Model::CreateFromOBJ("hitEffect", true);
+	guardEffectModel_ = Model::CreateFromOBJ("GuardEffect", true);
 	HitEffect::SetModel(hitEffectModel_);
 	GuardEffect::SetModel(guardEffectModel_);
 	Effect::SetCamera(&camera_);

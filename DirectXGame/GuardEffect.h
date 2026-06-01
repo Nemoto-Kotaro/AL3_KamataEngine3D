@@ -9,12 +9,10 @@ private:
 	State state_ = State::kSpread;
 	// 中心のエフェクト
 	KamataEngine::WorldTransform circleWorldTransform_;
-	// 尖ったエフェクト
-	std::array<KamataEngine::WorldTransform, 2> ellipseWorldTransforms_;
 
 	//
 	float counter_ = 0.0f;
-	static inline const float spreadDuration_ = 0.3f;
+	static inline const float spreadDuration_ = 0.1f;
 	static inline const float fadeDuration_ = 0.2f;
 
 	KamataEngine::ObjectColor objectColor_;

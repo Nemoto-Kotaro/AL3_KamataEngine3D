@@ -119,6 +119,8 @@ void ShieldEnemy::OnCollision(Player* player) {
 		// 左右向かい合う(向いている向きが違う)ならガード
 		if (player->GetLRDirection() != lrDirection_) {
 			player->RequestKnockback();
+			SelfVec3 effectPos = ((ToMyEngine(worldTransform_.translation_) + player->GetWorldPosition()) / 2.0f);
+			gameScene_->CreateGuardEffect(effectPos);
 			behaviorRequest_ = Behavior::kGuard;
 			return;
 		}
