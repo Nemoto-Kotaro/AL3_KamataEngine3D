@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "SelfMatrix.h"
+#include "ShieldEnemy.h"
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
@@ -16,9 +17,15 @@ GameScene::~GameScene() {
 
 	//=====エネミー=====
 	delete enemyModel_;
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		delete enemies;
 	}
+
+	////=====シールドエネミー=====
+	// delete enemyModel_;
+	// for (BaseEnemy* enemies : enemies_) {
+	//	delete enemies;
+	// }
 
 	//=====エフェクト=====
 	delete hitEffectModel_;
@@ -82,7 +89,16 @@ void GameScene::Initialize() {
 	for (int i = 0; i < 3; i++) {
 		Enemy* newEnemy = new Enemy();
 		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
-		newEnemy->Initialize(enemyModel_, &camera_, this,enemyPosition);
+		newEnemy->Initialize(enemyModel_, &camera_, this, enemyPosition);
+
+		enemies_.push_back(newEnemy);
+	}
+
+	shieldEnemyModel_ = Model::CreateFromOBJ("ShieldEnemy", true);
+	for (int i = 0; i < 3; i++) {
+		ShieldEnemy* newEnemy = new ShieldEnemy();
+		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + 3 + i, 18);
+		newEnemy->Initialize(shieldEnemyModel_, &camera_, this, enemyPosition);
 
 		enemies_.push_back(newEnemy);
 	}
@@ -157,7 +173,7 @@ void GameScene::UpdateMatrix() {
 	// プレイヤー
 	player_->UpdateMatrix();
 	// 敵
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->UpdateMatrix();
 		}
@@ -196,7 +212,7 @@ void GameScene::GamePlayPhaseUpdate() {
 	// プレイヤー
 	player_->Update();
 
-	enemies_.remove_if([](Enemy* enemy) {
+	enemies_.remove_if([](BaseEnemy* enemy) {
 		if (enemy->IsDead()) {
 			delete enemy;
 			return true;
@@ -206,7 +222,7 @@ void GameScene::GamePlayPhaseUpdate() {
 	});
 
 	// エネミー
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Update();
 		}
@@ -241,7 +257,7 @@ void GameScene::DeathPhaseUpdate() {
 	skyDome_->Update();
 
 	// エネミー
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Update();
 		}
@@ -277,7 +293,7 @@ void GameScene::Draw() {
 	player_->Draw();
 
 	// エネミー
-	for (Enemy* enemies : enemies_) {
+	for (BaseEnemy* enemies : enemies_) {
 		if (enemies != nullptr) {
 			enemies->Draw();
 		}
@@ -342,7 +358,7 @@ void GameScene::CheckAllCollisions() {
 #pragma region playerToEnemy
 	AABB aabb1 = player_->GetAABB();
 	AABB aabb2;
-	for (Enemy* enemy : enemies_) {
+	for (BaseEnemy* enemy : enemies_) {
 		if (enemy->IsCollisionDisabled()) {
 			continue;
 		}

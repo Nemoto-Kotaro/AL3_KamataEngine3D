@@ -85,6 +85,15 @@
     <Filter Include="ソース ファイル\Function\Random">
       <UniqueIdentifier>{796804f4-ff4b-487d-b9f3-94ea7e6be73f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Character\Enemy\NormalEnemy">
+      <UniqueIdentifier>{a2738f57-e19d-47b3-83a6-57f6ca90c047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Enemy\ShieldEnemy">
+      <UniqueIdentifier>{35fc3fba-ca15-4177-9dc9-35593ba10cea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Enemy\BaseEnemy">
+      <UniqueIdentifier>{2f52ccf5-5db5-4017-9fdd-cbd40eaab761}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -110,9 +119,6 @@
     </ClCompile>
     <ClCompile Include="CameraController.cpp">
       <Filter>ソース ファイル\World\CameraController</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>ソース ファイル\Character\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="SelfMatrix.cpp">
       <Filter>ソース ファイル\NemotoLibrary\Matrix</Filter>
@@ -140,6 +146,15 @@
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>ソース ファイル\Function\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>ソース ファイル\Character\Enemy\NormalEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="ShieldEnemy.cpp">
+      <Filter>ソース ファイル\Character\Enemy\ShieldEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseEnemy.cpp">
+      <Filter>ソース ファイル\Character\Enemy\BaseEnemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,9 +228,6 @@
     <ClInclude Include="CameraController.h">
       <Filter>ソース ファイル\World\CameraController</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>ソース ファイル\Character\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
@@ -245,6 +257,15 @@
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>ソース ファイル\Function\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>ソース ファイル\Character\Enemy\NormalEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="ShieldEnemy.h">
+      <Filter>ソース ファイル\Character\Enemy\ShieldEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseEnemy.h">
+      <Filter>ソース ファイル\Character\Enemy\BaseEnemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

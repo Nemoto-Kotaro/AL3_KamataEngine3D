@@ -44,7 +44,10 @@ private:
 
 	//エネミー
 	KamataEngine::Model* enemyModel_ = nullptr;
-	std::list<Enemy*> enemies_;
+	KamataEngine::Model* shieldEnemyModel_ = nullptr;
+	std::list<BaseEnemy*> enemies_;
+
+	
 
 	//エフェクト
 	KamataEngine::Model* hitEffectModel_ = nullptr;
