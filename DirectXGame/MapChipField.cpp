@@ -8,9 +8,10 @@ using namespace NemotoLibrary;
 
 // 名づけ
 namespace {
-std::map<std::string, MapChipType> mapChipTable = {
-    {"0", MapChipType::kBlank},
-    {"1", MapChipType::kBlock},
+std::map<char, MapChipType> mapChipTypeTable = {
+    {'B', MapChipType::kBlock },
+    {'P', MapChipType::kPlayer},
+    {'E', MapChipType::kEnemy },
 };
 }
 
@@ -18,7 +19,7 @@ std::map<std::string, MapChipType> mapChipTable = {
 void MapChipField::ResetMapChipData() {
 	mapChipData_.data.clear();
 	mapChipData_.data.resize(kNumBlockVertical);
-	for (std::vector<MapChipType>& mapChipDataLine : mapChipData_.data) {
+	for (std::vector<MapChipDataUnit>& mapChipDataLine : mapChipData_.data) {
 		mapChipDataLine.resize(kNumBlockHorizontal);
 	}
 }
@@ -47,9 +48,21 @@ void MapChipField::LoadMapChipCsv(const std::string& filePath) {
 			std::string word;
 			std::getline(lineStream, word, ',');
 
-			if (mapChipTable.contains(word)) {
-				mapChipData_.data[i][j] = mapChipTable[word];
+			if (word.empty()) {
+				continue;
 			}
+
+			if (!mapChipTypeTable.contains(word[kChipType])) {
+				continue;
+			}
+
+			mapChipData_.data[i][j].type = mapChipTypeTable[word[kChipType]];
+
+			if (word.size() <= kChipSubID) {
+				continue;
+			}
+
+			mapChipData_.data[i][j].subID = static_cast<uint8_t>(word[kChipSubID] - '0');
 		}
 	}
 }
@@ -63,22 +76,34 @@ MapChipType MapChipField::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex
 		return MapChipType::kBlank;
 	}
 
-	return mapChipData_.data[yIndex][xIndex];
+	return mapChipData_.data[yIndex][xIndex].type;
+}
+
+uint8_t MapChipField::GetMapChipSubIDByIndex(uint32_t xIndex, uint32_t yIndex) {
+	if (xIndex < 0 || kNumBlockHorizontal - 1 < xIndex) {
+		return static_cast<uint8_t>(255);
+	}
+
+	if (yIndex < 0 || kNumBlockVertical - 1 < yIndex) {
+		return static_cast<uint8_t>(255);
+	}
+
+	return mapChipData_.data[yIndex][xIndex].subID;
 }
 
 NemotoLibrary::SelfVec3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex) {
 	return SelfVec3(kBlockWidth * static_cast<float>(xIndex), kBlockHeight * static_cast<float>(kNumBlockVertical - 1 - yIndex), 0.0f);
 }
 
-MapChip::IndexSet MapChipField::GetMapChipIndexSetByPosition(const SelfVec3& position) {
-	MapChip::IndexSet indexSet = {};
+IndexSet MapChipField::GetMapChipIndexSetByPosition(const SelfVec3& position) {
+	IndexSet indexSet = {};
 	indexSet.xIndex = static_cast<uint32_t>((position.x + (kBlockWidth / 2.0f)) / kBlockWidth);
 	indexSet.yIndex = kNumBlockVertical - 1 - static_cast<uint32_t>((position.y + (kBlockHeight / 2.0f)) / kBlockHeight);
 	return indexSet;
 }
 
-MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) { 
-	SelfVec3 center = GetMapChipPositionByIndex(xIndex, yIndex); 
+MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
+	SelfVec3 center = GetMapChipPositionByIndex(xIndex, yIndex);
 	Rect rect;
 	rect.left = center.x - kBlockWidth / 2.0f;
 	rect.right = center.x + kBlockWidth / 2.0f;

@@ -25,6 +25,8 @@ private:
 
 	//終了フラグ
 	bool finished_ = false;
+	//リロードフラグ
+	bool reloadRequested_ =false;
 
 	//フェード
 	Fade* fade_ = nullptr;
@@ -80,6 +82,9 @@ private:
 	void DeathPhaseUpdate();
 	void ChangePhase();
 
+	
+void GenerateEnemy(const uint32_t& i, const uint32_t& j);
+
 public:
 	GameScene();
 	~GameScene();
@@ -89,7 +94,7 @@ public:
 	void Draw();
 
 	void CheckAllCollisions();
-	void GenerateBlocks();
+	void GenerateMapChips();
 
 	// エフェクトの生成
 	void CreateHitEffect(NemotoLibrary::SelfVec3& position);
@@ -97,4 +102,5 @@ public:
 
 	//ゲッターセッター
 	bool IsFinished() const { return finished_; };
+	bool IsRequestReload() const { return reloadRequested_; };
 };

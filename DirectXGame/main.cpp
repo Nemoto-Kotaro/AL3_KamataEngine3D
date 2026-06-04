@@ -116,6 +116,11 @@ void ChangeScene() {
 			gameScene = nullptr;
 			titleScene = new TitleScene;
 			titleScene->Initialize();
+		} else if (gameScene->IsRequestReload()) {
+			delete gameScene;
+			gameScene = nullptr;
+			gameScene = new GameScene;
+			gameScene->Initialize();
 		}
 
 		break;

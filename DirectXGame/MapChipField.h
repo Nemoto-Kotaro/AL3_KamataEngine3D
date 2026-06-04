@@ -3,20 +3,23 @@
 #include "SelfVector.h"
 #include <vector>
 
-enum class MapChipType { kBlank, kBlock };
+enum class MapChipType { kBlank, kBlock,kPlayer,kEnemy };
 
-struct MapChipData {
-	std::vector<std::vector<MapChipType>> data;
+struct MapChipDataUnit {
+	MapChipType type;
+	uint8_t subID;
 };
 
-namespace MapChip {
+enum MapChipCharIndex { kChipType = 0, kChipSubID = 1 };
+
+struct MapChipData {
+	std::vector<std::vector<MapChipDataUnit>> data;
+};
 
 struct IndexSet {
 	uint32_t xIndex;
 	uint32_t yIndex;
 };
-
-} // namespace MapChip
 
 class MapChipField {
 private:
@@ -44,6 +47,7 @@ public:
 	void LoadMapChipCsv(const std::string& filePath);
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 	NemotoLibrary::SelfVec3 GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex);
-	MapChip::IndexSet GetMapChipIndexSetByPosition(const NemotoLibrary::SelfVec3& position);
+	IndexSet GetMapChipIndexSetByPosition(const NemotoLibrary::SelfVec3& position);
+	uint8_t GetMapChipSubIDByIndex(uint32_t xIndex, uint32_t yIndex);
 	Rect GetRectByIndex(uint32_t xIndex, uint32_t yIndex);
 };

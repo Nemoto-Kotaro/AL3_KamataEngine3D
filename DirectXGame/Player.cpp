@@ -289,7 +289,7 @@ void Player::MapCollision(CollisionMapInfo& info) {
 }
 
 // 方向処理の共通化
-bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::IndexSet& indexSet) {
+bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, IndexSet& indexSet) {
 	int dirNum = static_cast<int>(dir);
 
 	// 方向ごとの処理テーブル
@@ -332,7 +332,7 @@ bool Player::IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::In
 	if (hit) {
 		// hit時はここの値がrectに参照される
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[corner[dirNum][0]]);
-		MapChip::IndexSet indexSetShow = mapChipField_->GetMapChipIndexSetByPosition(CornerPosition(ToMyEngine(worldTransform_.translation_), corner[dirNum][0]));
+		IndexSet indexSetShow = mapChipField_->GetMapChipIndexSetByPosition(CornerPosition(ToMyEngine(worldTransform_.translation_), corner[dirNum][0]));
 		uint32_t cmpIndexSet[2] = {indexSet.xIndex, indexSet.yIndex};
 		uint32_t cmpIndexSetShow[2] = {indexSetShow.xIndex, indexSetShow.yIndex};
 
@@ -353,7 +353,7 @@ void Player::MapCollisionTop(CollisionMapInfo& info) {
 		return;
 	}
 
-	MapChip::IndexSet indexSet;
+	IndexSet indexSet;
 	// ここのヒット関数でindexの更新も行っている
 	if (IsMapBlockEdgeHit(info, RectSide::kTop, indexSet)) {
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
@@ -369,7 +369,7 @@ void Player::MapCollisionBottom(CollisionMapInfo& info) {
 		return;
 	}
 
-	MapChip::IndexSet indexSet;
+	IndexSet indexSet;
 	if (IsMapBlockEdgeHit(info, RectSide::kBottom, indexSet)) {
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		float moveY = (rect.top - worldTransform_.translation_.y) + (kHeight / 2.0f + kBlank);
@@ -384,7 +384,7 @@ void Player::MapCollisionRight(CollisionMapInfo& info) {
 		return;
 	}
 
-	MapChip::IndexSet indexSet;
+	IndexSet indexSet;
 	if (IsMapBlockEdgeHit(info, RectSide::kRight, indexSet)) {
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		float moveX = (rect.left - worldTransform_.translation_.x) - (kWidth / 2.0f + kBlank);
@@ -399,7 +399,7 @@ void Player::MapCollisionLeft(CollisionMapInfo& info) {
 		return;
 	}
 
-	MapChip::IndexSet indexSet;
+	IndexSet indexSet;
 	if (IsMapBlockEdgeHit(info, RectSide::kLeft, indexSet)) {
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		float moveX = (rect.right - worldTransform_.translation_.x) + (kWidth / 2.0f + kBlank);
@@ -431,7 +431,7 @@ void Player::IsHitGround(const CollisionMapInfo& info) {
 
 			bool hit = false;
 			// 左下
-			MapChip::IndexSet indexSet;
+			IndexSet indexSet;
 			indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionNew[kLeftBottom] + SelfVec3(0.0f, -kBlank, 0.0f));
 			mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
 			if (mapChipType == MapChipType::kBlock) {

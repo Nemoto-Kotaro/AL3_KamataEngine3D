@@ -7,9 +7,7 @@ class BaseEnemy;
 
 // 前方宣言
 class MapChipField;
-namespace MapChip {
 struct IndexSet;
-}
 
 struct CollisionMapInfo {
 	bool isCeilingHit = false;
@@ -96,7 +94,7 @@ private:
 	static inline const float attackDashDuration = 0.3f;
 	static inline const float attackRecoveryDuration = 0.04f;
 
-	//ノックバック
+	// ノックバック
 	bool isRequestKnockback_ = false;
 
 	KnockbackPhase knockbackPhase_;
@@ -106,7 +104,7 @@ private:
 	static inline const float knockbackDuration = 0.1f;
 	static inline const float knockbackDownDuration = 0.05f;
 
-	//吹き飛ぶ勢い
+	// 吹き飛ぶ勢い
 	static inline const float knockbackPower = -0.45f;
 
 	// 攻撃エフェクト
@@ -122,7 +120,7 @@ private:
 
 	void BehaviorAttackInitialize();
 	void BehaviorAttackUpdate();
-	
+
 	void BehaviorKnockbackInitialize();
 	void BehaviorKnockbackUpdate();
 
@@ -133,7 +131,7 @@ private:
 	void MapCollisionRight(CollisionMapInfo& info);
 	void MapCollisionLeft(CollisionMapInfo& info);
 
-	bool IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, MapChip::IndexSet& indexSet);
+	bool IsMapBlockEdgeHit(CollisionMapInfo& info, RectSide dir, IndexSet& indexSet);
 
 	void IsHitCeiling(const CollisionMapInfo& info);
 	void IsHitGround(const CollisionMapInfo& info);

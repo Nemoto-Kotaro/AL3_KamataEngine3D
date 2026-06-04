@@ -1,8 +1,8 @@
 #include "GameScene.h"
+#include "GuardEffect.h"
+#include "HitEffect.h"
 #include "SelfMatrix.h"
 #include "ShieldEnemy.h"
-#include "HitEffect.h"
-#include "GuardEffect.h"
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
@@ -23,7 +23,6 @@ GameScene::~GameScene() {
 	for (BaseEnemy* enemies : enemies_) {
 		delete enemies;
 	}
-
 
 	//=====エフェクト=====
 	delete hitEffectModel_;
@@ -72,35 +71,8 @@ void GameScene::Initialize() {
 
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/mapData.csv");
-	GenerateBlocks();
 
-	//======プレイヤー======
-	SelfVec3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3, 18);
-	playerModel_ = Model::CreateFromOBJ("Player", true);
-	player_ = new Player();
-	playerAttackModel_ = Model::CreateFromOBJ("AttackEffect", true);
-	player_->Initialize(playerModel_, playerAttackModel_, &camera_, playerPosition);
-
-	player_->SetMapChipField(mapChipField_);
-
-	//======エネミー======
-	enemyModel_ = Model::CreateFromOBJ("Enemy", true);
-	for (int i = 0; i < 3; i++) {
-		Enemy* newEnemy = new Enemy();
-		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + i, 18);
-		newEnemy->Initialize(enemyModel_, &camera_, this, enemyPosition);
-
-		enemies_.push_back(newEnemy);
-	}
-
-	shieldEnemyModel_ = Model::CreateFromOBJ("ShieldEnemy", true);
-	for (int i = 0; i < 3; i++) {
-		ShieldEnemy* newEnemy = new ShieldEnemy();
-		SelfVec3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(10 + 3 + i, 18);
-		newEnemy->Initialize(shieldEnemyModel_, &camera_, this, enemyPosition);
-
-		enemies_.push_back(newEnemy);
-	}
+	GenerateMapChips();
 
 	//=====エフェクト=====
 	hitEffectModel_ = Model::CreateFromOBJ("hitEffect", true);
@@ -129,6 +101,14 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	GameScene::ChangePhase();
+#ifdef _DEBUG
+	ImGui::Begin("Debug");
+	if (ImGui::Button("Reload")) {
+		reloadRequested_ = true;
+	}
+
+	ImGui::End();
+#endif // _DEBUG
 
 	//======更新処理=======
 
@@ -328,9 +308,9 @@ void GameScene::Draw() {
 }
 
 ///==========================
-/// ブロック生成
+/// マップ生成
 ///==========================
-void GameScene::GenerateBlocks() {
+void GameScene::GenerateMapChips() {
 
 	uint32_t kNumBlockVertical = mapChipField_->GetNumBlockVertical();
 	uint32_t kNumBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
@@ -342,13 +322,52 @@ void GameScene::GenerateBlocks() {
 
 	for (uint32_t i = 0; i < kNumBlockVertical; i++) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; j++) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+			switch (mapChipField_->GetMapChipTypeByIndex(j, i)) {
+			case MapChipType::kBlock: {
 				WorldTransform* worldTransform = new WorldTransform();
 				worldTransform->Initialize();
 				worldTransFormBlocks_[i][j] = worldTransform;
 				worldTransFormBlocks_[i][j]->translation_ = ToKamataEngine(mapChipField_->GetMapChipPositionByIndex(j, i));
+				break;
+			}
+			case MapChipType::kPlayer:
+				assert(player_ == nullptr && "自キャラを二重に配置しようとしています");
+
+				//======プレイヤー======
+				playerModel_ = Model::CreateFromOBJ("Player", true);
+				player_ = new Player();
+				playerAttackModel_ = Model::CreateFromOBJ("AttackEffect", true);
+				player_->Initialize(playerModel_, playerAttackModel_, &camera_, mapChipField_->GetMapChipPositionByIndex(j, i));
+				player_->SetMapChipField(mapChipField_);
+
+				break;
+			case MapChipType::kEnemy:
+				GenerateEnemy(i, j);
+				break;
+			default:
+				break;
 			}
 		}
+	}
+}
+
+void GameScene::GenerateEnemy(const uint32_t& i, const uint32_t& j) {
+	uint8_t subID = mapChipField_->GetMapChipSubIDByIndex(j, i);
+	switch (subID) {
+	case 0: {
+		Enemy* newEnemy = new Enemy();
+		enemyModel_ = Model::CreateFromOBJ("Enemy", true);
+		newEnemy->Initialize(enemyModel_, &camera_, this, mapChipField_->GetMapChipPositionByIndex(j, i));
+		enemies_.push_back(newEnemy);
+	} break;
+	case 1: {
+		ShieldEnemy* newEnemy = new ShieldEnemy();
+		shieldEnemyModel_ = Model::CreateFromOBJ("ShieldEnemy", true);
+		newEnemy->Initialize(shieldEnemyModel_, &camera_, this, mapChipField_->GetMapChipPositionByIndex(j, i));
+		enemies_.push_back(newEnemy);
+	} break;
+	default:
+		break;
 	}
 }
 
