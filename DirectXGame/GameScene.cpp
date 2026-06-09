@@ -119,8 +119,8 @@ void GameScene::Update() {
 	case Phase::kDeath:
 		DeathPhaseUpdate();
 		break;
-	case GameScene::Phase::kFadeIn:
-	case GameScene::Phase::kFadeOut:
+	case Phase::kFadeIn:
+	case Phase::kFadeOut:
 		fade_->Update();
 		break;
 	default:
@@ -236,6 +236,7 @@ void GameScene::GamePlayPhaseUpdate() {
 void GameScene::DeathPhaseUpdate() {
 	// 天球
 	skyDome_->Update();
+	player_->Update();
 
 	// エネミー
 	for (BaseEnemy* enemies : enemies_) {
@@ -401,12 +402,14 @@ void GameScene::ChangePhase() {
 	case Phase::kFadeIn:
 		if (fade_->IsFinished()) {
 			phase_ = Phase::kPlay;
+			camaraController_->SetIsScroll(true);
 		}
 
 		break;
 	case Phase::kPlay:
 		if (player_->IsDead()) {
 			phase_ = Phase::kDeath;
+			camaraController_->SetIsScroll(false);
 			const SelfVec3& deathParticlesPosition = player_->GetWorldPosition();
 
 			deathParticles_ = new DeathParticles;

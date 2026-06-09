@@ -45,11 +45,21 @@ private:
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::WorldTransform worldTransform_;
 
+	KamataEngine::ObjectColor objectColor_;
 	// カメラ
 	KamataEngine::Camera* camera_ = nullptr;
 
 	// デスフラグ
 	bool isDead_ = false;
+	bool isScrollPushDead_ = false;
+
+	
+	// スクロールで死んだときのデス演出
+	float deathCounter_ = 0.0f;
+	static inline const float deathDuration_ = 1.0f;
+	static inline const float deathVanishDuration_ = 3.0f;
+	float deathDirectionStrat = 0.0f;
+	float deathDirectionEnd = 0.0f;
 
 	// 当たり判定
 	MapChipField* mapChipField_ = nullptr;
@@ -144,6 +154,8 @@ public:
 	void Draw();
 
 	void OnCollision(const BaseEnemy* enemy);
+	//スクロールの押出
+	void ScrollPush(const NemotoLibrary::SelfVec3& cameraTrans, float halfWidth);
 
 	// ゲッタセッタ系
 	NemotoLibrary::SelfVec3 GetWorldPosition() const;
