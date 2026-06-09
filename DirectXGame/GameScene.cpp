@@ -107,6 +107,12 @@ void GameScene::Update() {
 		reloadRequested_ = true;
 	}
 
+	const char* modeNames[] = {"Follow", "ForcedScroll"};
+	int mode = static_cast<int>(camaraController_->GetMode());
+	if (ImGui::Combo("Camera Mode", &mode, modeNames, IM_ARRAYSIZE(modeNames))) {
+		camaraController_->SetMode(static_cast<Mode>(mode));
+	}
+
 	ImGui::End();
 #endif // _DEBUG
 

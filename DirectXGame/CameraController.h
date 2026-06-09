@@ -14,7 +14,7 @@ enum class Mode { kFollow, kForcedScroll };
 
 class CameraController {
 private:
-	Mode mode_ = Mode::kForcedScroll;
+	Mode mode_ = Mode::kFollow;
 	KamataEngine::Camera* camera_;
 	Player* target_ = nullptr;
 	NemotoLibrary::SelfVec3 targetOffset_ = {0.0f, 0.0f, -15.0f};
