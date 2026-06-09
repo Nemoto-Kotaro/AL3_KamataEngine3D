@@ -23,77 +23,96 @@ void Player::Initialize(Model* model, Model* modelAttack, Camera* camera, const 
 	assert(modelAttack);
 	modelAttack_ = modelAttack;
 	worldTransformAttack_.Initialize();
-
+	objectColor_.Initialize();
 	camera_ = camera;
 }
 
 ///=============更新処理=============
 
 void Player::Update() {
-	if (isRequestKnockback_) {
-		behaviorRequest_ = Behavior::kKnockback;
-		isRequestKnockback_ = false;
-	}
+	//このif文ちょい汚いが死んでるか死んでないかしかないのでいまは許容
+	if (!isDead_) {
 
-	if (behaviorRequest_ != Behavior::kUnknown) {
-		behavior_ = behaviorRequest_;
+		if (isRequestKnockback_) {
+			behaviorRequest_ = Behavior::kKnockback;
+			isRequestKnockback_ = false;
+		}
+
+		if (behaviorRequest_ != Behavior::kUnknown) {
+			behavior_ = behaviorRequest_;
+			switch (behavior_) {
+			case Player::Behavior::kRoot:
+				BehaviorRootInitialize();
+				break;
+			case Player::Behavior::kAttack:
+				BehaviorAttackInitialize();
+				break;
+			case Player::Behavior::kKnockback:
+				BehaviorKnockbackInitialize();
+				break;
+			default:
+				break;
+			}
+
+			behaviorRequest_ = Behavior::kUnknown;
+		}
+
 		switch (behavior_) {
 		case Player::Behavior::kRoot:
-			BehaviorRootInitialize();
+			BehaviorRootUpdate();
 			break;
 		case Player::Behavior::kAttack:
-			BehaviorAttackInitialize();
+			BehaviorAttackUpdate();
 			break;
 		case Player::Behavior::kKnockback:
-			BehaviorKnockbackInitialize();
+			BehaviorKnockbackUpdate();
 			break;
 		default:
 			break;
 		}
 
-		behaviorRequest_ = Behavior::kUnknown;
-	}
+		CollisionMapInfo collisionMapInfo = {};
+		collisionMapInfo.MoveOffset = velocity_;
+		// 衝突チェック
+		MapCollision(collisionMapInfo);
 
-	switch (behavior_) {
-	case Player::Behavior::kRoot:
-		BehaviorRootUpdate();
-		break;
-	case Player::Behavior::kAttack:
-		BehaviorAttackUpdate();
-		break;
-	case Player::Behavior::kKnockback:
-		BehaviorKnockbackUpdate();
-		break;
-	default:
-		break;
-	}
+		// 結果を反映して移動
+		worldTransform_.translation_ = ToKamataEngine(collisionMapInfo.MoveOffset + worldTransform_.translation_);
 
-	CollisionMapInfo collisionMapInfo = {};
-	collisionMapInfo.MoveOffset = velocity_;
-	// 衝突チェック
-	MapCollision(collisionMapInfo);
+		// 天井に接している場合の処理
+		IsHitCeiling(collisionMapInfo);
 
-	// 結果を反映して移動
-	worldTransform_.translation_ = ToKamataEngine(collisionMapInfo.MoveOffset + worldTransform_.translation_);
+		// 地面に接しているときの処理
+		IsHitGround(collisionMapInfo);
 
-	// 天井に接している場合の処理
-	IsHitCeiling(collisionMapInfo);
+		// 壁に接しているときの処理
+		IsHitWall(collisionMapInfo);
 
-	// 地面に接しているときの処理
-	IsHitGround(collisionMapInfo);
+		if (turnTimer_ > 0.0f) {
+			turnTimer_ -= 1.0f / 60.0f;
 
-	// 壁に接しているときの処理
-	IsHitWall(collisionMapInfo);
+			// 回転処理
+			float destinationRotationYTable[] = {std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * -0.5f};
+			float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
+			float timeRatio = 1.0f - (turnTimer_ / kTimerTurn);
 
-	if (turnTimer_ > 0.0f) {
-		turnTimer_ -= 1.0f / 60.0f;
+			worldTransform_.rotation_.y = Lerp(turnFirstRotationY_, destinationRotationY, Ease::InOutSine(timeRatio));
+		}
 
-		// 回転処理
-		float destinationRotationYTable[] = {std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * -0.5f};
-		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
-		float timeRatio = 1.0f - (turnTimer_ / kTimerTurn);
+	} else {
 
-		worldTransform_.rotation_.y = Lerp(turnFirstRotationY_, destinationRotationY, Ease::InOutSine(timeRatio));
+		//スクロールで死んだときのデス演出
+		if (isScrollPushDead_) {
+			deathCounter_ += 1.0f / 60.0f;
+
+			float t = std::clamp(deathCounter_ / deathDuration_, 0.0f, 1.0f);
+			worldTransform_.rotation_.x = Lerp(0.0f, std::numbers::pi_v<float> * 0.5f, Ease::InSine(t));
+			worldTransform_.rotation_.y = Lerp(deathDirectionStrat, deathDirectionEnd, Ease::InSine(t));
+
+			Vector4 color_ = {1.0f, 1.0f, 1.0f, 1.0f};
+			color_.w = std::clamp(1.0f - Ratio(deathCounter_, 0.0f, deathVanishDuration_), 0.0f, 1.0f);
+			objectColor_.SetColor(color_);
+		}
 	}
 }
 
@@ -110,7 +129,7 @@ void Player::UpdateMatrix() {
 ///=============描画処理=============
 
 void Player::Draw() {
-	model_->Draw(worldTransform_, *camera_);
+	model_->Draw(worldTransform_, *camera_, &objectColor_);
 	if (behavior_ == Behavior::kAttack) {
 		modelAttack_->Draw(worldTransformAttack_, *camera_);
 	}
@@ -475,6 +494,25 @@ void Player::OnCollision(const BaseEnemy* enemy) {
 	(void)enemy;
 
 	isDead_ = true;
+}
+
+void Player::ScrollPush(const SelfVec3& cameraTrans, float halfWidth) {
+	CollisionMapInfo collisionMapInfo = {};
+	collisionMapInfo.MoveOffset.x = std::clamp(worldTransform_.translation_.x, cameraTrans.x - halfWidth + kWidth / 2.0f, cameraTrans.x + halfWidth - kWidth / 2.0f) - worldTransform_.translation_.x;
+	IndexSet indexSet;
+
+	// 専用判定を用意した方がいいが流用可能なので利用
+	if (IsMapBlockEdgeHit(collisionMapInfo, RectSide::kRight, indexSet)) {
+		// めり込んでいた場合死亡
+
+		isDead_ = true;
+		isScrollPushDead_ = true;
+		deathDirectionStrat = worldTransform_.rotation_.y;
+		deathDirectionEnd = worldTransform_.rotation_.y + std::numbers::pi_v<float> * -4.0f;
+	}
+
+	// めりこみ関係なく位置は動かしてしまう
+	worldTransform_.translation_.x += collisionMapInfo.MoveOffset.x;
 }
 
 SelfVec3 Player::CornerPosition(const NemotoLibrary::SelfVec3& center, Corner corner) {

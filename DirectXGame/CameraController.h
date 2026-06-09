@@ -10,18 +10,26 @@ struct Rect {
 	float top = 1.0f;
 };
 
+enum class Mode { kFollow, kForcedScroll };
+
 class CameraController {
 private:
+	Mode mode_ = Mode::kForcedScroll;
 	KamataEngine::Camera* camera_;
 	Player* target_ = nullptr;
-	NemotoLibrary::SelfVec3 targetOffset_ = {0.0f,0.0f,-15.0f};
-	Rect movableArea_ = {11.0f,88.0f,6.0f,20.0f};
+	NemotoLibrary::SelfVec3 targetOffset_ = {0.0f, 0.0f, -15.0f};
+	Rect movableArea_ = {11.0f, 88.0f, 6.0f, 20.0f};
 
 	NemotoLibrary::SelfVec3 targetTransform;
 	static inline const float kInterpolationRate = 0.04f;
 	static inline const float kVelocityBias = 0.07f;
 
-	static inline const Rect margin = {-6.0f,6.0f,-6.0f,6.0f};
+	static inline const Rect margin = {-6.0f, 6.0f, -6.0f, 6.0f};
+
+	//スクロール
+	static inline const float kScrollSpeed = 2.0f;
+
+	bool isScroll_ = false;
 
 public:
 	void Initialize(KamataEngine::Camera* camera);
@@ -30,4 +38,8 @@ public:
 	void Reset();
 	void SetTarget(Player* target) { target_ = target; };
 	void SetMovableArea(Rect area) { movableArea_ = area; };
+	void SetIsScroll(bool isScroll) { isScroll_ = isScroll; };
+
+	void SetMode(Mode mode) { mode_ = mode; }
+	Mode GetMode() const { return mode_; }
 };
