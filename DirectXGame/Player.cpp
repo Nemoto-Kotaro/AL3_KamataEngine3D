@@ -1,5 +1,6 @@
 ﻿#define NOMINMAX
 #include "Player.h"
+#include "GlobalVariables.h"
 #include "MapChipField.h"
 #include "WorldTransform.h"
 #include "easing.h"
@@ -14,6 +15,14 @@ using namespace NemotoLibrary;
 ///=============初期化処理=============
 
 void Player::Initialize(Model* model, Model* modelAttack, Camera* camera, const SelfVec3& position) {
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	GlobalVariables::GetInstance()->CreatGroup(groupName);
+
+	globalVariables->SetValue(groupName, "TestInt", 0);
+	globalVariables->SetValue(groupName, "TestFloat", 0.0f);
+	globalVariables->SetValue(groupName, "TestVector", SelfVec3(0.0f, 0.0f, 0.0f));
+
 	assert(model);
 	model_ = model;
 	worldTransform_.Initialize();
@@ -30,7 +39,7 @@ void Player::Initialize(Model* model, Model* modelAttack, Camera* camera, const 
 ///=============更新処理=============
 
 void Player::Update() {
-	//このif文ちょい汚いが死んでるか死んでないかしかないのでいまは許容
+	// このif文ちょい汚いが死んでるか死んでないかしかないのでいまは許容
 	if (!isDead_) {
 
 		if (isRequestKnockback_) {
@@ -101,7 +110,7 @@ void Player::Update() {
 
 	} else {
 
-		//スクロールで死んだときのデス演出
+		// スクロールで死んだときのデス演出
 		if (isScrollPushDead_) {
 			deathCounter_ += 1.0f / 60.0f;
 
