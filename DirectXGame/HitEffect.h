@@ -14,8 +14,8 @@ private:
 
 	//
 	float counter_ = 0.0f;
-	static inline const float spreadDuration_ = 0.3f;
-	static inline const float fadeDuration_ = 0.2f;
+	static inline float spreadDuration_ = 0.3f;
+	static inline float fadeDuration_ = 0.2f;
 
 	KamataEngine::ObjectColor objectColor_;
 	NemotoLibrary::SelfVec4 color_;

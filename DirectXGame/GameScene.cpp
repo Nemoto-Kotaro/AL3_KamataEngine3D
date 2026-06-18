@@ -56,6 +56,11 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize(StageManager* stageManger) {
+	Player::RegisterGlobalVariables();
+	Enemy::RegisterGlobalVariables();
+	ShieldEnemy::RegisterGlobalVariables();
+
+
 	stageManger_ = stageManger;
 
 	//======フェード初期化======
@@ -105,6 +110,14 @@ void GameScene::Initialize(StageManager* stageManger) {
 }
 
 void GameScene::Update() {
+	//調整項目の適応
+	Player::ApplyGlobalVariables();
+	Enemy::ApplyGlobalVariables();
+	ShieldEnemy::ApplyGlobalVariables();
+
+
+
+
 	GameScene::ChangePhase();
 #ifdef _DEBUG
 	ImGui::Begin("Debug");

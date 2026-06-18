@@ -52,6 +52,8 @@ private:
 	// カメラ
 	KamataEngine::Camera* camera_ = nullptr;
 
+	MapChipField* mapChipField_ = nullptr;
+
 	// デスフラグ
 	bool isDead_ = false;
 	bool isScrollPushDead_ = false;
@@ -59,25 +61,24 @@ private:
 	
 	// スクロールで死んだときのデス演出
 	float deathCounter_ = 0.0f;
-	static inline const float deathDuration_ = 1.0f;
-	static inline const float deathVanishDuration_ = 3.0f;
+	static inline float deathDuration_ = 1.0f;
+	static inline float deathVanishDuration_ = 3.0f;
 	float deathDirectionStrat = 0.0f;
 	float deathDirectionEnd = 0.0f;
 
 	// 当たり判定
-	MapChipField* mapChipField_ = nullptr;
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
-	static inline const float kBlank = 0.00001f;
+	static inline float kWidth = 0.8f;
+	static inline float kHeight = 0.8f;
+	static inline float kBlank = 0.00001f;
 
 	// 振るまい
 	Behavior behavior_ = Behavior::kRoot;
 	Behavior behaviorRequest_ = Behavior::kUnknown;
 
 	// 移動
-	static inline const float kAcceleration = 0.006f;
-	static inline const float kAttenuation = 0.07f;
-	static inline const float kLimitRunSpeed = 0.3f;
+	static inline float kAcceleration = 0.006f;
+	static inline float kAttenuation = 0.07f;
+	static inline float kLimitRunSpeed = 0.3f;
 	NemotoLibrary::SelfVec3 velocity_ = {};
 	NemotoLibrary::SelfVec3 lerpStrat_ = {};
 
@@ -86,26 +87,26 @@ private:
 	float turnFirstRotationY_ = 0.0f;
 	float turnTimer_ = 0.0f;
 
-	static inline const float kTimerTurn = 0.3f;
+	static inline float kTimerTurn = 0.3f;
 
 	// ジャンプ
 	bool onGround_ = true;
-	static inline const float kGravityAcceleration = 0.025f;
-	static inline const float kLimitFallSpeed = 0.4f;
-	static inline const float kJumpAcceleration = 0.40f;
+	static inline float kGravityAcceleration = 0.025f;
+	static inline float kLimitFallSpeed = 0.4f;
+	static inline float kJumpAcceleration = 0.40f;
 
 	// 地形ヒットの減衰
-	static inline const float kAttenuationLanding = 0.03f;
-	static inline const float kAttenuationWall = 0.03f;
+	static inline float kAttenuationLanding = 0.03f;
+	static inline float kAttenuationWall = 0.03f;
 
 	// 攻撃行動
 	AttackPhase attackPhase_;
 	float attackCounter_ = 0.0f;
 
 	// 攻撃の動作時間
-	static inline const float attackChargeDuration = 0.02f;
-	static inline const float attackDashDuration = 0.3f;
-	static inline const float attackRecoveryDuration = 0.04f;
+	static inline float attackChargeDuration = 0.02f;
+	static inline float attackDashDuration = 0.3f;
+	static inline float attackRecoveryDuration = 0.04f;
 
 	// ノックバック
 	bool isRequestKnockback_ = false;
@@ -114,11 +115,11 @@ private:
 	float knockbackCounter_ = 0.0f;
 
 	// ノックバックの動作時間
-	static inline const float knockbackDuration = 0.1f;
-	static inline const float knockbackDownDuration = 0.05f;
+	static inline float knockbackDuration = 0.1f;
+	static inline float knockbackDownDuration = 0.05f;
 
 	// 吹き飛ぶ勢い
-	static inline const float knockbackPower = -0.45f;
+	static inline float knockbackPower = -0.45f;
 
 	// 攻撃エフェクト
 	KamataEngine::Model* modelAttack_ = nullptr;
@@ -151,6 +152,9 @@ private:
 	void IsHitWall(const CollisionMapInfo& info);
 
 public:
+	static void RegisterGlobalVariables();
+	static void ApplyGlobalVariables();
+
 	void Initialize(KamataEngine::Model* model, KamataEngine::Model* modelAttack, KamataEngine::Camera* camera, const NemotoLibrary::SelfVec3& position);
 	void Update();
 	void UpdateMatrix();

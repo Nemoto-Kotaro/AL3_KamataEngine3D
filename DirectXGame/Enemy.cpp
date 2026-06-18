@@ -1,10 +1,11 @@
 ﻿#include "Enemy.h"
 #define NOMINMAX
-#include "Player.h"
 #include "GameScene.h"
+#include "Player.h"
 #include "WorldTransform.h"
 #include "easing.h"
 #include "mathTypes.h"
+#include "GlobalVariables.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -12,6 +13,23 @@
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
+
+void Enemy::RegisterGlobalVariables() {
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Enemy";
+	GlobalVariables::GetInstance()->CreatGroup(groupName);
+	globalVariables->AddItem(groupName, "kWidth", kWidth);
+	globalVariables->AddItem(groupName, "kHeight", kHeight);
+	globalVariables->AddItem(groupName, "kWalkSpeed", kWalkSpeed);
+}
+
+void Enemy::ApplyGlobalVariables() {
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Enemy";
+	kWidth = globalVariables->GetFloatValue(groupName, "kWidth");
+	kHeight = globalVariables->GetFloatValue(groupName, "kHeight");
+	kWalkSpeed = globalVariables->GetFloatValue(groupName, "kWalkSpeed");
+}
 
 ///=============初期化処理=============
 void Enemy::Initialize(Model* model, Camera* camera, GameScene* gameScene, const SelfVec3& position) {
@@ -22,14 +40,12 @@ void Enemy::Initialize(Model* model, Camera* camera, GameScene* gameScene, const
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> * -1.5f;
 	WorldTransformUpdate(worldTransform_);
 
-	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
 	camera_ = camera;
 
 	gameScene_ = gameScene;
 
 	walkTimer_ = 0.0f;
 }
-
 
 void Enemy::Update() {
 	if (behaviorRequest_ != Behavior::kUnknown) {
@@ -65,6 +81,8 @@ void Enemy::Update() {
 void Enemy::BehaviorRootInitialize() { isCollisionDisabled_ = false; }
 
 void Enemy::BehaviorRootUpdate() {
+	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
+
 	worldTransform_.translation_ = ToKamataEngine(velocity_ + worldTransform_.translation_);
 
 	// 歩きアニメーション

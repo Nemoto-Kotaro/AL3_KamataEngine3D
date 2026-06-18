@@ -5,6 +5,7 @@
 #include "WorldTransform.h"
 #include "easing.h"
 #include "mathTypes.h"
+#include "GlobalVariables.h"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -12,6 +13,23 @@
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
+
+void ShieldEnemy::RegisterGlobalVariables() {
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "ShieldEnemy";
+	GlobalVariables::GetInstance()->CreatGroup(groupName);
+	globalVariables->AddItem(groupName, "kWidth", kWidth);
+	globalVariables->AddItem(groupName, "kHeight", kHeight);
+	globalVariables->AddItem(groupName, "kWalkSpeed", kWalkSpeed);
+}
+
+void ShieldEnemy::ApplyGlobalVariables() {
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "ShieldEnemy";
+	kWidth = globalVariables->GetFloatValue(groupName, "kWidth");
+	kHeight = globalVariables->GetFloatValue(groupName, "kHeight");
+	kWalkSpeed = globalVariables->GetFloatValue(groupName, "kWalkSpeed");
+}
 
 ///=============初期化処理=============
 void ShieldEnemy::Initialize(Model* model, Camera* camera, GameScene* gameScene, const SelfVec3& position) {
@@ -21,8 +39,6 @@ void ShieldEnemy::Initialize(Model* model, Camera* camera, GameScene* gameScene,
 	worldTransform_.translation_ = ToKamataEngine(position);
 	worldTransform_.rotation_.y = DegTheta(kWalkMotionAngleStart);
 	WorldTransformUpdate(worldTransform_);
-
-	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
 	camera_ = camera;
 
 	gameScene_ = gameScene;
@@ -70,6 +86,8 @@ void ShieldEnemy::Update() {
 void ShieldEnemy::BehaviorRootInitialize() { isCollisionDisabled_ = false; }
 
 void ShieldEnemy::BehaviorRootUpdate() {
+	velocity_ = SelfVec3(-kWalkSpeed, 0.0f, 0.0f);
+
 	worldTransform_.translation_ = ToKamataEngine(velocity_ + worldTransform_.translation_);
 
 	// 歩きアニメーション

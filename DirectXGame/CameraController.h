@@ -21,13 +21,13 @@ private:
 	Rect movableArea_ = {11.0f, 88.0f, 6.0f, 20.0f};
 
 	NemotoLibrary::SelfVec3 targetTransform;
-	static inline const float kInterpolationRate = 0.04f;
-	static inline const float kVelocityBias = 0.07f;
+	static inline float kInterpolationRate = 0.04f;
+	static inline float kVelocityBias = 0.07f;
 
 	static inline const Rect margin = {-6.0f, 6.0f, -6.0f, 6.0f};
 
 	//スクロール
-	static inline const float kScrollSpeed = 2.0f;
+	static inline float kScrollSpeed = 2.0f;
 
 	bool isScroll_ = false;
 
