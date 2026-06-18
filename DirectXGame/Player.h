@@ -42,6 +42,9 @@ public:
 	enum class KnockbackPhase { kKnockback, kDown };
 
 private:
+
+
+
 	KamataEngine::Model* model_ = nullptr;
 	KamataEngine::WorldTransform worldTransform_;
 

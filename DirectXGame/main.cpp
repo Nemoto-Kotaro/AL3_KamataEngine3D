@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <sstream>
+#include "GlobalVariables.h"
 
 using namespace KamataEngine;
 
@@ -72,7 +73,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 更新処理
 		//============================
 		imguiManager->Begin();
-
+		
+		GlobalVariables::GetInstance()->Update();
+		
 		// シーンチェンジ
 		ChangeScene();
 
