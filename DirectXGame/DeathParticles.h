@@ -12,9 +12,9 @@ private:
 	static inline const uint32_t kNumParticles = 8;
 	std::array<KamataEngine::WorldTransform, kNumParticles> worldTransforms_;
 
-	static inline const float kDuration = 1.0f;
-	static inline const float kSpeed = 0.07f;
-	static inline const float kAngleUnit = 2.0f * std::numbers::pi_v<float> / 8.0f;
+	static inline float kDuration = 1.0f;
+	static inline float kSpeed = 0.07f;
+	static inline float kAngleUnit = 2.0f * std::numbers::pi_v<float> / 8.0f;
 
 	bool isFinished_ = false;
 	float counter_ = 0.0f;

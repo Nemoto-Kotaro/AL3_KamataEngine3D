@@ -12,16 +12,35 @@
 using namespace KamataEngine;
 using namespace NemotoLibrary;
 
-///=============初期化処理=============
-
-void Player::Initialize(Model* model, Model* modelAttack, Camera* camera, const SelfVec3& position) {
+void Player::RegisterGlobalVariables() {
 	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
 	const char* groupName = "Player";
 	GlobalVariables::GetInstance()->CreatGroup(groupName);
 
-	globalVariables->SetValue(groupName, "TestInt", 0);
-	globalVariables->SetValue(groupName, "TestFloat", 0.0f);
-	globalVariables->SetValue(groupName, "TestVector", SelfVec3(0.0f, 0.0f, 0.0f));
+	globalVariables->AddItem(groupName, "kWidth", kWidth);
+	globalVariables->AddItem(groupName, "kHeight", kHeight);
+	globalVariables->AddItem(groupName, "kBlank", kBlank);
+	globalVariables->AddItem(groupName, "deathDuration_", deathDuration_);
+	globalVariables->AddItem(groupName, "deathVanishDuration_", deathVanishDuration_);
+	globalVariables->AddItem(groupName, "kAcceleration", kAcceleration);
+	globalVariables->AddItem(groupName, "kLimitRunSpeed", kLimitRunSpeed);
+}
+
+void Player::ApplyGlobalVariables() {
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	kWidth = globalVariables->GetFloatValue(groupName, "kWidth");
+	kHeight = globalVariables->GetFloatValue(groupName, "kHeight");
+	kBlank = globalVariables->GetFloatValue(groupName, "kBlank");
+	deathDuration_ = globalVariables->GetFloatValue(groupName, "deathDuration_");
+	deathVanishDuration_ = globalVariables->GetFloatValue(groupName, "deathVanishDuration_");
+	kAcceleration = globalVariables->GetFloatValue(groupName, "kAcceleration");
+	kLimitRunSpeed = globalVariables->GetFloatValue(groupName, "kLimitRunSpeed");
+}
+
+///=============初期化処理=============
+
+void Player::Initialize(Model* model, Model* modelAttack, Camera* camera, const SelfVec3& position) {
 
 	assert(model);
 	model_ = model;

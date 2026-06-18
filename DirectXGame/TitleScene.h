@@ -34,7 +34,7 @@ private:
 	KamataEngine::WorldTransform titleWorldTransform_;
 
 	float swayTimer = 0.0f;
-	static inline const float swayDuration = 1.0f; //往復間隔
+	static inline float swayDuration = 1.0f; //往復間隔
 	
 
 public:

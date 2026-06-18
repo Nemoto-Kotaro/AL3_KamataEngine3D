@@ -18,22 +18,22 @@ private:
 
 private:
 	// 当たり判定
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
+	static inline float kWidth = 0.8f;
+	static inline float kHeight = 0.8f;
 
 	// 移動
-	static inline const float kWalkSpeed = 0.02f;
+	static inline float kWalkSpeed = 0.02f;
 	NemotoLibrary::SelfVec3 velocity_;
 
 	float walkTimer_ = 0.0f;
 
 	// デス演出
 	float deathCounter_ = 0.0f;
-	static inline const float deathDuration_ = 1.0f;
+	static inline float deathDuration_ = 1.0f;
 
-	static inline const float kWalkMotionAngleStart = 0.0f;
-	static inline const float kWalkMotionAngleEnd = 20.0f;
-	static inline const float kWalkMotionTime = 1.0f;
+	static inline float kWalkMotionAngleStart = 0.0f;
+	static inline float kWalkMotionAngleEnd = 20.0f;
+	static inline float kWalkMotionTime = 1.0f;
 
 	LRDirection lrDirection_ = LRDirection::kLeft;
 
@@ -44,6 +44,9 @@ private:
 	void BehaviorDeathUpdate();
 
 public:
+	static void RegisterGlobalVariables();
+	static void ApplyGlobalVariables();
+
 	void Initialize(Model* model, Camera* camera, GameScene* gameScene, const NemotoLibrary::SelfVec3& position) override;
 
 	void Update() override;
