@@ -14,6 +14,8 @@ public:
 
 	void Update();
 
+	void SaveFile(const std::string& groupName);
+
 private:
 	GlobalVariables() = default;
 	~GlobalVariables() = default;
@@ -30,4 +32,5 @@ private:
 
 	std::map<std::string, Group> datas_;
 
+	const std::string kDirectoryPath = "Resources/GlobalVariables/";
 };
