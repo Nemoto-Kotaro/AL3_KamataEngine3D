@@ -100,6 +100,9 @@
     <Filter Include="ソース ファイル\Effect\GuardEffect">
       <UniqueIdentifier>{f9bc7136-2b7f-4c56-8f9f-54d0d8b184d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Stage">
+      <UniqueIdentifier>{604672e4-1289-40d2-a6df-d440e63ff55d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -167,6 +170,9 @@
     </ClCompile>
     <ClCompile Include="GuardEffect.cpp">
       <Filter>ソース ファイル\Effect\GuardEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="StageManager.cpp">
+      <Filter>ソース ファイル\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,6 +290,9 @@
     </ClInclude>
     <ClInclude Include="GuardEffect.h">
       <Filter>ソース ファイル\Effect\GuardEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="StageManager.h">
+      <Filter>ソース ファイル\Stage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,10 @@
 #include "GameScene.h"
 #include "KamataEngine.h"
+#include "StageManager.h"
 #include "TitleScene.h"
 #include <Windows.h>
+#include <fstream>
+#include <sstream>
 
 using namespace KamataEngine;
 
@@ -15,6 +18,7 @@ Scene scene = Scene::kUnknown;
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+StageManager* stageManager = nullptr;
 
 ///=============
 /// 関数
@@ -22,6 +26,7 @@ TitleScene* titleScene = nullptr;
 void ChangeScene();
 void UpdateScene();
 void DrawScene();
+void LoadDebugSettings();
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
@@ -31,13 +36,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 
+	stageManager = new StageManager();
+
+	stageManager->StageLoadCSV();
+
 	scene = Scene::kTitle;
 
 #ifdef _DEBUG
+	LoadDebugSettings();
+
 	scene = Scene::kGame;
 #endif // _DEBUG
 
-	//シーン切り替え
+	// シーン切り替え
 	switch (scene) {
 	case Scene::kTitle:
 		titleScene = new TitleScene();
@@ -45,12 +56,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		break;
 	case Scene::kGame:
 		gameScene = new GameScene();
-		gameScene->Initialize();
+		gameScene->Initialize(stageManager);
 		break;
 	default:
 		break;
 	}
-
 
 	while (true) {
 
@@ -68,7 +78,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		// 更新処理
 		UpdateScene();
-
 		imguiManager->End();
 
 		//============================
@@ -89,6 +98,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	titleScene = nullptr;
 	delete gameScene;
 	gameScene = nullptr;
+	delete stageManager;
+	stageManager = nullptr;
 
 	KamataEngine::Finalize();
 	return 0;
@@ -104,7 +115,7 @@ void ChangeScene() {
 			delete titleScene;
 			titleScene = nullptr;
 			gameScene = new GameScene;
-			gameScene->Initialize();
+			gameScene->Initialize(stageManager);
 		}
 		break;
 	case Scene::kGame:
@@ -120,7 +131,7 @@ void ChangeScene() {
 			delete gameScene;
 			gameScene = nullptr;
 			gameScene = new GameScene;
-			gameScene->Initialize();
+			gameScene->Initialize(stageManager);
 		}
 
 		break;
@@ -152,5 +163,33 @@ void DrawScene() {
 		break;
 	default:
 		break;
+	}
+}
+
+
+void LoadDebugSettings() {
+	const std::string filePath = "DebugSettings.ini";
+	std::ifstream file;
+	file.open(filePath);
+	if (!file.is_open()) {
+		return;
+	}
+
+	std::stringstream debugSettingCSV;
+	debugSettingCSV << file.rdbuf();
+	file.close();
+
+	std::string line;
+
+	getline(debugSettingCSV, line);
+
+	std::string key;
+	std::string value;
+	std::istringstream iss(line);
+	iss >> key;
+	iss >> value;
+
+	if (key == "InitialStage") {
+		stageManager->SetCurrentStageIndexByName(value);
 	}
 }
