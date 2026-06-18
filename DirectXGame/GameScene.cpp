@@ -3,6 +3,7 @@
 #include "HitEffect.h"
 #include "SelfMatrix.h"
 #include "ShieldEnemy.h"
+#include "StageManager.h"
 
 using namespace KamataEngine;
 using namespace NemotoLibrary;
@@ -54,7 +55,8 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 }
 
-void GameScene::Initialize() {
+void GameScene::Initialize(StageManager* stageManger) {
+	stageManger_ = stageManger;
 
 	//======フェード初期化======
 	fade_ = new Fade();
@@ -70,7 +72,10 @@ void GameScene::Initialize() {
 	blockModel_ = Model::CreateFromOBJ("Block_Crate", true);
 
 	mapChipField_ = new MapChipField;
-	mapChipField_->LoadMapChipCsv("Resources/mapData.csv");
+	const StageData& stageData = stageManger_->GetCurrentStageData();
+	std::string stageFileNama = "Resources/fields/" + stageData.name + ".csv";
+
+	mapChipField_->LoadMapChipCsv(stageFileNama);
 
 	GenerateMapChips();
 
