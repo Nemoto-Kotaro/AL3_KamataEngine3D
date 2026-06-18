@@ -1,4 +1,11 @@
 #include "GlobalVariables.h"
+#include <Windows.h>
+#include <filesystem>
+#include <fstream>
+#include <json.hpp>
+#include <sstream>
+
+using json = nlohmann::json;
 
 GlobalVariables* GlobalVariables::GetInstance() {
 	static GlobalVariables instance;
@@ -6,15 +13,15 @@ GlobalVariables* GlobalVariables::GetInstance() {
 }
 
 void GlobalVariables::Update() {
-	if (!ImGui::Begin("Global Variables",nullptr,ImGuiWindowFlags_MenuBar)) {
+	if (!ImGui::Begin("Global Variables", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
 
-	if (!ImGui::BeginMenuBar()) return;
+	if (!ImGui::BeginMenuBar())
+		return;
 
-
-	for (std::map<std::string, Group>::iterator itGroup = datas_.begin(); itGroup != datas_.end();++itGroup) {
+	for (std::map<std::string, Group>::iterator itGroup = datas_.begin(); itGroup != datas_.end(); ++itGroup) {
 		const std::string& groupName = itGroup->first;
 		Group& group = itGroup->second;
 
@@ -22,14 +29,13 @@ void GlobalVariables::Update() {
 			continue;
 		}
 
-
-		for (std::map<std::string, Item>::iterator itItem = group.items.begin(); itItem != group.items.end(); ++ itItem) {
+		for (std::map<std::string, Item>::iterator itItem = group.items.begin(); itItem != group.items.end(); ++itItem) {
 			const std::string& itemName = itItem->first;
 			Item& item = itItem->second;
 
 			if (std::holds_alternative<int32_t>(item.value)) {
 				int32_t* ptr = std::get_if<int32_t>(&item.value);
-				ImGui::SliderInt(itemName.c_str(),ptr,0,100);
+				ImGui::SliderInt(itemName.c_str(), ptr, 0, 100);
 			}
 
 			if (std::holds_alternative<float>(item.value)) {
@@ -42,7 +48,14 @@ void GlobalVariables::Update() {
 				ImGui::SliderFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), -100.0f, 100.0f);
 			}
 		}
-	
+
+		ImGui::Text("\n");
+
+		if (ImGui::Button("Save")) {
+			SaveFile(groupName);
+			std::string message = std::format("{}.json saved.", groupName);
+			MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+		}
 
 		ImGui::EndMenu();
 	}
@@ -72,4 +85,46 @@ void GlobalVariables::SetValue(const std::string& groupName, const std::string& 
 	Item newItem{};
 	newItem.value = value;
 	group.items[key] = newItem;
+}
+
+void GlobalVariables::SaveFile(const std::string& groupName) {
+	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
+	assert(itGroup != datas_.end());
+
+	json root;
+	root = json::object();
+	root[groupName] = json::object();
+	for (std::map<std::string, Item>::iterator itItem = itGroup->second.items.begin(); itItem != itGroup->second.items.end(); ++itItem) {
+		const std::string& itemName = itItem->first;
+		Item& item = itItem->second;
+
+		if (std::holds_alternative<int32_t>(item.value)) {
+			root[groupName][itemName] = std::get<int32_t>(item.value);
+		} else if (std::holds_alternative<float>(item.value)) {
+			root[groupName][itemName] = std::get<float>(item.value);
+		} else if (std::holds_alternative<NemotoLibrary::SelfVec3>(item.value)) {
+			NemotoLibrary::SelfVec3 value = std::get<NemotoLibrary::SelfVec3>(item.value);
+			root[groupName][itemName] = json::array({value.x, value.y, value.z});
+		}
+
+		std::filesystem::path dir(kDirectoryPath);
+
+		if (!std::filesystem::exists(dir)) {
+			std::filesystem::create_directory(dir);
+		}
+
+		std::string filePath = kDirectoryPath + groupName + ".json";
+		std::ofstream ofs;
+		ofs.open(filePath);
+
+		if (ofs.fail()) {
+			std::string message = "Failed open data file for write";
+			MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+			assert(0);
+			return;
+		}
+
+		ofs << std::setw(4) << root << std::endl;
+		ofs.close();
+	}
 }
